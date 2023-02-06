@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private Rigidbody2D PlayerBody;
+    private Rigidbody PlayerBody;
     [SerializeField] private float PlayerSpeed = 5.0f;
     private Vector2 midPoint;
     private Vector3 midPoint_as_V3;
@@ -12,10 +12,14 @@ public class Player : MonoBehaviour
     private float HalfScreenHeight = Screen.height / 2;
     [SerializeField] private float CameraScrollDistance = 50;
 
+    [SerializeField] private Animator playerAnimator;
+
     [SerializeField] private GameObject BulletPrefab;
 
+    [SerializeField] private Camera logicCamera;
 
-    private Vector2 AttackDirection;
+
+    private Vector3 AttackDirection;
 
     //Cursor Settings
     [SerializeField] private Texture2D cursorTexture;
@@ -26,9 +30,9 @@ public class Player : MonoBehaviour
     {
         //Cursor init
         Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
-        Cursor.lockState = CursorLockMode.Confined;
+        //Cursor.lockState = CursorLockMode.Confined;
 
-        PlayerBody = GetComponent<Rigidbody2D>();
+        PlayerBody = GetComponent<Rigidbody>();
     }
 
     void Update()
@@ -36,10 +40,10 @@ public class Player : MonoBehaviour
         Movement();
         PlayerCamera();
 
-        AttackDirection = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position);
-        print(AttackDirection);
+        AttackDirection = (logicCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1.0f)) - transform.position);
 
-        Quaternion BulletRotation = Quaternion.LookRotation(AttackDirection, Vector3.up);
+
+        Quaternion BulletRotation = Quaternion.LookRotation(new Vector3(AttackDirection.x, 0, AttackDirection.z), Vector3.up);
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -56,10 +60,22 @@ public class Player : MonoBehaviour
     {
         //Directional Movement
         float VerticalMovement = Input.GetAxis("Vertical");
-        PlayerBody.velocity = new Vector3(PlayerBody.velocity.x, VerticalMovement * PlayerSpeed);
-
         float HorizontalMovement = Input.GetAxis("Horizontal");
-        PlayerBody.velocity = new Vector3(HorizontalMovement * PlayerSpeed, PlayerBody.velocity.y);
+        PlayerBody.velocity = (Camera.main.transform.forward * VerticalMovement * PlayerSpeed) + (Camera.main.transform.right * HorizontalMovement * PlayerSpeed);
+
+
+
+
+
+
+        if (PlayerBody.velocity.x != 0 || PlayerBody.velocity.z != 0)
+        {
+            playerAnimator.SetBool("IsWalking", true);
+        }
+        else
+        {
+            playerAnimator.SetBool("IsWalking", false);
+        }
 
 
         //Dash
@@ -67,14 +83,16 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            transform.position = Vector2.Lerp(transform.position, transform.position + Vector3.up, DashTimer);
+            transform.position = Vector2.Lerp(transform.position, transform.position - Vector3.up, DashTimer);
         }
     }
 
     private void PlayerCamera()
     {
         midPoint = (Input.mousePosition - transform.position);
-        midPoint_as_V3 = new Vector3(midPoint.x, midPoint.y, -10);
-        Camera.main.transform.position = transform.position + new Vector3(midPoint_as_V3.x / HalfScreenWidth * CameraScrollDistance - CameraScrollDistance, midPoint_as_V3.y / HalfScreenHeight * CameraScrollDistance - CameraScrollDistance, midPoint_as_V3.z);
+        midPoint_as_V3 = new Vector3(midPoint.x, 3.5f, midPoint.y);
+       // Camera.main.transform.position = transform.position + new Vector3(midPoint_as_V3.x / HalfScreenWidth * CameraScrollDistance - CameraScrollDistance, midPoint_as_V3.y, midPoint_as_V3.z / HalfScreenHeight * CameraScrollDistance - CameraScrollDistance);
+        logicCamera.transform.position = new Vector3(transform.position.x, transform.position.y + 6, transform.position.z);
+        //Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y + 3.5f, transform.position.z -3.5f);
     }
 }

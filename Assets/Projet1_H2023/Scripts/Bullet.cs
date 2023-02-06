@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Target : MonoBehaviour
+public class Bullet : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -13,7 +13,6 @@ public class Target : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 Pos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10);
-        transform.position = Camera.main.ScreenToWorldPoint(Pos);
+        transform.Translate(Vector3.forward * Time.deltaTime * 5);
     }
 }

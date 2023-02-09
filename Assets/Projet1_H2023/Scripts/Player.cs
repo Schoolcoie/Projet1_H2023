@@ -45,15 +45,11 @@ public class Player : MonoBehaviour
 
         Quaternion BulletRotation = Quaternion.LookRotation(new Vector3(AttackDirection.x, 0, AttackDirection.z), Vector3.up);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            Instantiate(BulletPrefab, transform.position, BulletRotation);
+            Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
         }
         
-        
-
-
-
     }
 
     private void Movement()
@@ -62,11 +58,6 @@ public class Player : MonoBehaviour
         float VerticalMovement = Input.GetAxis("Vertical");
         float HorizontalMovement = Input.GetAxis("Horizontal");
         PlayerBody.velocity = (Camera.main.transform.forward * VerticalMovement * PlayerSpeed) + (Camera.main.transform.right * HorizontalMovement * PlayerSpeed);
-
-
-
-
-
 
         if (PlayerBody.velocity.x != 0 || PlayerBody.velocity.z != 0)
         {

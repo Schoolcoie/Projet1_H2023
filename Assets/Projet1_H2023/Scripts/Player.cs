@@ -6,54 +6,136 @@ public class Player : MonoBehaviour
 {
     private Rigidbody PlayerBody;
     [SerializeField] private float PlayerSpeed = 5.0f;
-    private Vector2 midPoint;
-    private Vector3 midPoint_as_V3;
+    private float MaxHealth = 5;
+    private float CurrentHealth;
+    private Attack currentWeapon;
+    [SerializeField] private Attack primaryWeapon;
+    [SerializeField] private Attack secondaryWeapon;
     private float HalfScreenWidth = Screen.width / 2;
     private float HalfScreenHeight = Screen.height / 2;
-    [SerializeField] private float CameraScrollDistance = 50;
+    private bool IsDead;
+
+    private Vector3 playerPosition;
+    public Vector3 GetPlayerPosition => playerPosition;
+
+    private Item hoveredItem;
 
     [SerializeField] private Animator playerAnimator;
 
-    [SerializeField] private GameObject BulletPrefab;
+    [SerializeField] private Projectile BulletPrefab;
 
-    [SerializeField] private Camera logicCamera;
+    int PlaneLayer = 1 << 3;
 
+    private bool OnCooldown = false;
 
     private Vector3 AttackDirection;
+
+    [SerializeField]
+    private GameObject testhealth;
 
     //Cursor Settings
     [SerializeField] private Texture2D cursorTexture;
     public CursorMode cursorMode = CursorMode.Auto;
     public Vector2 hotSpot = Vector2.zero;
 
+
     void Start()
     {
         //Cursor init
         Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
         //Cursor.lockState = CursorLockMode.Confined;
-
         PlayerBody = GetComponent<Rigidbody>();
+        //Events Init
+        //Player Init
+        CurrentHealth = MaxHealth;
+        currentWeapon = primaryWeapon;
+        BulletPrefab.AttackProperties = currentWeapon;
     }
 
     void Update()
     {
-        Movement();
-        PlayerCamera();
+        playerPosition = transform.position;
 
-        AttackDirection = (logicCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1.0f)) - transform.position);
-
-
-        Quaternion BulletRotation = Quaternion.LookRotation(new Vector3(AttackDirection.x, 0, AttackDirection.z), Vector3.up);
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (CheatManager.Instance.IsNoClipping)
         {
-            Instantiate(BulletPrefab, transform.position, BulletRotation);
+            GetComponent<Collider>().isTrigger = true;
         }
-        
-        
+        else
+        {
+            GetComponent<Collider>().isTrigger = false;
+        }
 
 
+        if (!IsDead)
+        {
+            Movement();
 
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                if (currentWeapon == primaryWeapon && secondaryWeapon != null)
+                {
+                    currentWeapon = secondaryWeapon;
+                }
+                else if (currentWeapon == secondaryWeapon && primaryWeapon != null)
+                {
+                    currentWeapon = primaryWeapon;
+                }
+
+            }
+
+            if (hoveredItem != null)
+            {
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    if (currentWeapon == primaryWeapon)
+                    {
+                        currentWeapon = hoveredItem.AttackProperties;
+                        hoveredItem.AttackProperties = primaryWeapon;
+                        primaryWeapon = currentWeapon;
+                    }
+                    else
+                    {
+                        currentWeapon = hoveredItem.AttackProperties;
+                        hoveredItem.AttackProperties = secondaryWeapon;
+                        secondaryWeapon = currentWeapon;
+                        
+                    }
+                }
+            }
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            Debug.DrawRay(ray.origin, ray.direction * 100, Color.white);
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, PlaneLayer))
+            {
+                AttackDirection = hit.point - transform.position;
+            }
+
+            Quaternion BulletRotation = Quaternion.LookRotation(new Vector3(AttackDirection.x, 0, AttackDirection.z), Vector3.up);
+
+            print(OnCooldown);
+
+            if (!OnCooldown)
+            {
+                if (Input.GetKey(KeyCode.Mouse1))
+                {
+                    BulletPrefab.AttackProperties = currentWeapon;
+                    BulletPrefab.AttackProperties.IsFriendly = true;
+                    Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
+                    StartCoroutine(CooldownRoutine(bullet.GetCooldown));
+                }
+            }
+
+           
+        }
+    }
+
+    private IEnumerator CooldownRoutine(float cooldown)
+    {
+        OnCooldown = true;
+        yield return new WaitForSeconds(cooldown);
+        OnCooldown = false;
     }
 
     private void Movement()
@@ -62,11 +144,6 @@ public class Player : MonoBehaviour
         float VerticalMovement = Input.GetAxis("Vertical");
         float HorizontalMovement = Input.GetAxis("Horizontal");
         PlayerBody.velocity = (Camera.main.transform.forward * VerticalMovement * PlayerSpeed) + (Camera.main.transform.right * HorizontalMovement * PlayerSpeed);
-
-
-
-
-
 
         if (PlayerBody.velocity.x != 0 || PlayerBody.velocity.z != 0)
         {
@@ -87,12 +164,41 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void PlayerCamera()
+    public void ApplyDamage(float Damage)
     {
-        midPoint = (Input.mousePosition - transform.position);
-        midPoint_as_V3 = new Vector3(midPoint.x, 3.5f, midPoint.y);
-       // Camera.main.transform.position = transform.position + new Vector3(midPoint_as_V3.x / HalfScreenWidth * CameraScrollDistance - CameraScrollDistance, midPoint_as_V3.y, midPoint_as_V3.z / HalfScreenHeight * CameraScrollDistance - CameraScrollDistance);
-        logicCamera.transform.position = new Vector3(transform.position.x, transform.position.y + 6, transform.position.z);
-        //Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y + 3.5f, transform.position.z -3.5f);
+        if (!CheatManager.Instance.InGodMode)
+        {
+
+            CurrentHealth -= Damage;
+
+            //update the UI
+            testhealth.transform.localScale = new Vector3(CurrentHealth / MaxHealth, testhealth.transform.localScale.y, testhealth.transform.localScale.z);
+
+            if (CurrentHealth <= 0)
+            {
+                IsDead = true;
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Item"))
+        {
+            print($"Detected collision with item {other.name}");
+            hoveredItem = other.gameObject.GetComponent<Item>(); //temporarily only weapons
+            //communicate with the UI to show prompt to pick it up
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Item"))
+        {
+            print($"Left collision with item {other.name}");
+            hoveredItem = null;
+            //communicate with the UI to hide prompt to pick it up
+        }
     }
 }

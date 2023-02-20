@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    [SerializeField]
-    private Attack AttackProperties;
+    public Attack AttackProperties; //need to turn this into an action
 
     private float Damage;
     public float GetDamage => Damage;

@@ -8,27 +8,30 @@ public class Player : MonoBehaviour
     [SerializeField] private float PlayerSpeed = 5.0f;
     private float MaxHealth = 5;
     private float CurrentHealth;
-    private Vector2 midPoint;
-    private Vector3 midPoint_as_V3;
+    private Attack currentWeapon;
+    [SerializeField] private Attack primaryWeapon;
+    [SerializeField] private Attack secondaryWeapon;
     private float HalfScreenWidth = Screen.width / 2;
     private float HalfScreenHeight = Screen.height / 2;
     private bool IsDead;
 
-    [SerializeField] private float CameraScrollDistance = 50;
+    private Vector3 playerPosition;
+    public Vector3 GetPlayerPosition => playerPosition;
+
+    private Item hoveredItem;
 
     [SerializeField] private Animator playerAnimator;
 
     [SerializeField] private Projectile BulletPrefab;
 
-    [SerializeField] private Camera logicCamera;
-
     int PlaneLayer = 1 << 3;
 
     private bool OnCooldown = false;
 
-
-
     private Vector3 AttackDirection;
+
+    [SerializeField]
+    private GameObject testhealth;
 
     //Cursor Settings
     [SerializeField] private Texture2D cursorTexture;
@@ -45,12 +48,13 @@ public class Player : MonoBehaviour
         //Events Init
         //Player Init
         CurrentHealth = MaxHealth;
-
+        currentWeapon = primaryWeapon;
+        BulletPrefab.AttackProperties = currentWeapon;
     }
 
     void Update()
     {
-        
+        playerPosition = transform.position;
 
         if (CheatManager.Instance.IsNoClipping)
         {
@@ -61,19 +65,43 @@ public class Player : MonoBehaviour
             GetComponent<Collider>().isTrigger = false;
         }
 
-       
+
         if (!IsDead)
         {
             Movement();
-            PlayerCamera();
 
-            //AttackDirection = (logicCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1.0f)) - transform.position);
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                if (currentWeapon == primaryWeapon && secondaryWeapon != null)
+                {
+                    currentWeapon = secondaryWeapon;
+                }
+                else if (currentWeapon == secondaryWeapon && primaryWeapon != null)
+                {
+                    currentWeapon = primaryWeapon;
+                }
 
+            }
 
-           
-
-            
-
+            if (hoveredItem != null)
+            {
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    if (currentWeapon == primaryWeapon)
+                    {
+                        currentWeapon = hoveredItem.AttackProperties;
+                        hoveredItem.AttackProperties = primaryWeapon;
+                        primaryWeapon = currentWeapon;
+                    }
+                    else
+                    {
+                        currentWeapon = hoveredItem.AttackProperties;
+                        hoveredItem.AttackProperties = secondaryWeapon;
+                        secondaryWeapon = currentWeapon;
+                        
+                    }
+                }
+            }
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -92,16 +120,19 @@ public class Player : MonoBehaviour
             {
                 if (Input.GetKey(KeyCode.Mouse1))
                 {
+                    BulletPrefab.AttackProperties = currentWeapon;
+                    BulletPrefab.AttackProperties.IsFriendly = true;
                     Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
                     StartCoroutine(CooldownRoutine(bullet.GetCooldown));
                 }
             }
-        } 
+
+           
+        }
     }
 
     private IEnumerator CooldownRoutine(float cooldown)
     {
-        print(cooldown);
         OnCooldown = true;
         yield return new WaitForSeconds(cooldown);
         OnCooldown = false;
@@ -141,21 +172,33 @@ public class Player : MonoBehaviour
             CurrentHealth -= Damage;
 
             //update the UI
-            print(CurrentHealth);
+            testhealth.transform.localScale = new Vector3(CurrentHealth / MaxHealth, testhealth.transform.localScale.y, testhealth.transform.localScale.z);
 
             if (CurrentHealth <= 0)
             {
                 IsDead = true;
+                Destroy(gameObject);
             }
         }
     }
 
-    private void PlayerCamera()
+    private void OnTriggerEnter(Collider other)
     {
-        midPoint = (Input.mousePosition - transform.position);
-        midPoint_as_V3 = new Vector3(midPoint.x, 3.5f, midPoint.y);
-       // Camera.main.transform.position = transform.position + new Vector3(midPoint_as_V3.x / HalfScreenWidth * CameraScrollDistance - CameraScrollDistance, midPoint_as_V3.y, midPoint_as_V3.z / HalfScreenHeight * CameraScrollDistance - CameraScrollDistance);
-        logicCamera.transform.position = new Vector3(transform.position.x, transform.position.y + 6, transform.position.z);
-        //Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y + 3.5f, transform.position.z -3.5f);
+        if (other.CompareTag("Item"))
+        {
+            print($"Detected collision with item {other.name}");
+            hoveredItem = other.gameObject.GetComponent<Item>(); //temporarily only weapons
+            //communicate with the UI to show prompt to pick it up
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Item"))
+        {
+            print($"Left collision with item {other.name}");
+            hoveredItem = null;
+            //communicate with the UI to hide prompt to pick it up
+        }
     }
 }

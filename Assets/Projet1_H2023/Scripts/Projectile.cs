@@ -9,16 +9,18 @@ public class Projectile : MonoBehaviour
     private Attack AttackProperties;
 
     private float Damage;
+    public float GetDamage => Damage;
     private float Speed;
     private float Range;
+
     private float Cooldown;
+    public float GetCooldown => Cooldown;
     private float ProjectileLifespan;
     private bool IsFriendly;
 
     private Action<float> DealDamage;
 
-
-    void Start()
+    private void Awake()
     {
         Damage = AttackProperties.BaseDamage;
         Speed = AttackProperties.BaseTravelSpeed;
@@ -26,7 +28,10 @@ public class Projectile : MonoBehaviour
         Cooldown = AttackProperties.BaseAttackSpeed;
         ProjectileLifespan = AttackProperties.BaseLifeSpan;
         IsFriendly = AttackProperties.IsFriendly;
-        GetComponent<MeshRenderer>().material.color = AttackProperties.Color;
+        GetComponent<MeshRenderer>().material.color = AttackProperties.Color;   
+    }
+    void Start()
+    {
         StartCoroutine(DeathCoroutine());
     }
 

@@ -49,7 +49,7 @@ MonoBehaviour:
   PlayerSpeed: 5
   CameraScrollDistance: 2.5
   playerAnimator: {fileID: 5144315254271670248}
-  BulletPrefab: {fileID: 8430994619995530452, guid: 732433b993dff3747a14331a8d99968d, type: 3}
+  BulletPrefab: {fileID: 2870334183199740399, guid: 732433b993dff3747a14331a8d99968d, type: 3}
   logicCamera: {fileID: 0}
   cursorTexture: {fileID: 0}
   cursorMode: 0
@@ -198,4 +198,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84ed510ad07d3d24b9484d1b8b4d3f68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CamTransform: {fileID: 0}

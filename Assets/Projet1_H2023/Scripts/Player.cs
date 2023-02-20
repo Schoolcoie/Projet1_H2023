@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
     private Rigidbody PlayerBody;
     [SerializeField] private float PlayerSpeed = 5.0f;
     private float MaxHealth = 5;
-    private float CurrentHealth = 5;
+    private float CurrentHealth;
     private Vector2 midPoint;
     private Vector3 midPoint_as_V3;
     private float HalfScreenWidth = Screen.width / 2;
@@ -18,9 +18,14 @@ public class Player : MonoBehaviour
 
     [SerializeField] private Animator playerAnimator;
 
-    [SerializeField] private GameObject BulletPrefab;
+    [SerializeField] private Projectile BulletPrefab;
 
     [SerializeField] private Camera logicCamera;
+
+    int PlaneLayer = 1 << 3;
+
+    private bool OnCooldown = false;
+
 
 
     private Vector3 AttackDirection;
@@ -30,6 +35,7 @@ public class Player : MonoBehaviour
     public CursorMode cursorMode = CursorMode.Auto;
     public Vector2 hotSpot = Vector2.zero;
 
+
     void Start()
     {
         //Cursor init
@@ -37,6 +43,8 @@ public class Player : MonoBehaviour
         //Cursor.lockState = CursorLockMode.Confined;
         PlayerBody = GetComponent<Rigidbody>();
         //Events Init
+        //Player Init
+        CurrentHealth = MaxHealth;
 
     }
 
@@ -59,18 +67,44 @@ public class Player : MonoBehaviour
             Movement();
             PlayerCamera();
 
-            AttackDirection = (logicCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1.0f)) - transform.position);
+            //AttackDirection = (logicCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1.0f)) - transform.position);
 
+
+           
+
+            
+
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            Debug.DrawRay(ray.origin, ray.direction * 100, Color.white);
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, PlaneLayer))
+            {
+                AttackDirection = hit.point - transform.position;
+            }
 
             Quaternion BulletRotation = Quaternion.LookRotation(new Vector3(AttackDirection.x, 0, AttackDirection.z), Vector3.up);
 
-            if (Input.GetKeyDown(KeyCode.Mouse1))
+            print(OnCooldown);
+
+            if (!OnCooldown)
             {
-                Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
+                if (Input.GetKey(KeyCode.Mouse1))
+                {
+                    Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
+                    StartCoroutine(CooldownRoutine(bullet.GetCooldown));
+                }
             }
-        }
-        
-        
+        } 
+    }
+
+    private IEnumerator CooldownRoutine(float cooldown)
+    {
+        print(cooldown);
+        OnCooldown = true;
+        yield return new WaitForSeconds(cooldown);
+        OnCooldown = false;
     }
 
     private void Movement()

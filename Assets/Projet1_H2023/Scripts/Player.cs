@@ -6,10 +6,14 @@ public class Player : MonoBehaviour
 {
     private Rigidbody PlayerBody;
     [SerializeField] private float PlayerSpeed = 5.0f;
+    private float MaxHealth = 5;
+    private float CurrentHealth = 5;
     private Vector2 midPoint;
     private Vector3 midPoint_as_V3;
     private float HalfScreenWidth = Screen.width / 2;
     private float HalfScreenHeight = Screen.height / 2;
+    private bool IsDead;
+
     [SerializeField] private float CameraScrollDistance = 50;
 
     [SerializeField] private Animator playerAnimator;
@@ -31,24 +35,41 @@ public class Player : MonoBehaviour
         //Cursor init
         Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
         //Cursor.lockState = CursorLockMode.Confined;
-
         PlayerBody = GetComponent<Rigidbody>();
+        //Events Init
+
     }
 
     void Update()
     {
-        Movement();
-        PlayerCamera();
+        
 
-        AttackDirection = (logicCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1.0f)) - transform.position);
-
-
-        Quaternion BulletRotation = Quaternion.LookRotation(new Vector3(AttackDirection.x, 0, AttackDirection.z), Vector3.up);
-
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (CheatManager.Instance.IsNoClipping)
         {
-            Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
+            GetComponent<Collider>().isTrigger = true;
         }
+        else
+        {
+            GetComponent<Collider>().isTrigger = false;
+        }
+
+       
+        if (!IsDead)
+        {
+            Movement();
+            PlayerCamera();
+
+            AttackDirection = (logicCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1.0f)) - transform.position);
+
+
+            Quaternion BulletRotation = Quaternion.LookRotation(new Vector3(AttackDirection.x, 0, AttackDirection.z), Vector3.up);
+
+            if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
+            }
+        }
+        
         
     }
 
@@ -75,6 +96,23 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             transform.position = Vector2.Lerp(transform.position, transform.position - Vector3.up, DashTimer);
+        }
+    }
+
+    public void ApplyDamage(float Damage)
+    {
+        if (!CheatManager.Instance.InGodMode)
+        {
+
+            CurrentHealth -= Damage;
+
+            //update the UI
+            print(CurrentHealth);
+
+            if (CurrentHealth <= 0)
+            {
+                IsDead = true;
+            }
         }
     }
 

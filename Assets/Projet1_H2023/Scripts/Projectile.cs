@@ -56,8 +56,6 @@ public class Projectile : MonoBehaviour
                 print($"Bullet dealt {Damage} to {other.gameObject.name}");
 
                 Destroy(gameObject);
-
-                
             }
         }
         else
@@ -65,9 +63,16 @@ public class Projectile : MonoBehaviour
 
             if (other.gameObject.CompareTag("Player"))
             {
-                //Action to deal damage to player it collided with
-
                 print("Bullet collided with the Player");
+
+                DealDamage += other.gameObject.GetComponent<Player>().ApplyDamage;
+                DealDamage(Damage);
+                DealDamage -= other.gameObject.GetComponent<Player>().ApplyDamage;
+
+                //Apply invincibility frames
+
+                print($"Bullet dealt {Damage} to {other.gameObject.name}");
+
                 Destroy(gameObject);
             }
         }

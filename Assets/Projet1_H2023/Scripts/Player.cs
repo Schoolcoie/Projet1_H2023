@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     private bool OnCooldown = false;
 
     private Vector3 AttackDirection;
+    public Vector3 GetAttackDirection => AttackDirection;
 
     [SerializeField]
     private GameObject testhealth;
@@ -54,6 +55,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        print(Camera.main.transform.right);
         playerPosition = transform.position;
 
         if (CheatManager.Instance.IsNoClipping)
@@ -122,12 +124,18 @@ public class Player : MonoBehaviour
                 {
                     BulletPrefab.AttackProperties = currentWeapon;
                     BulletPrefab.AttackProperties.IsFriendly = true;
-                    Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
-                    StartCoroutine(CooldownRoutine(bullet.GetCooldown));
+
+                    for (int i = 0; i < BulletPrefab.AttackProperties.ProjectileCount; i++)
+                    {
+                        Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
+
+                        if (i == BulletPrefab.AttackProperties.ProjectileCount - 1)
+                        {
+                            StartCoroutine(CooldownRoutine(bullet.GetCooldown));
+                        }
+                    }
                 }
             }
-
-           
         }
     }
 
@@ -143,7 +151,7 @@ public class Player : MonoBehaviour
         //Directional Movement
         float VerticalMovement = Input.GetAxis("Vertical");
         float HorizontalMovement = Input.GetAxis("Horizontal");
-        PlayerBody.velocity = (Camera.main.transform.forward * VerticalMovement * PlayerSpeed) + (Camera.main.transform.right * HorizontalMovement * PlayerSpeed);
+        PlayerBody.velocity = (new Vector3(0.7f, 0, 0.7f) * VerticalMovement * PlayerSpeed) + (Camera.main.transform.right * HorizontalMovement * PlayerSpeed);
 
         if (PlayerBody.velocity.x != 0 || PlayerBody.velocity.z != 0)
         {

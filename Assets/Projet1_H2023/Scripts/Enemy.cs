@@ -15,8 +15,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private GameObject testhealth;
 
-    [SerializeField]
-    private Attack enemyAttack;
+    public Attack enemyAttack;
 
     private Projectile instance;
 
@@ -40,8 +39,16 @@ public class Enemy : MonoBehaviour
         {
             BulletPrefab.AttackProperties = enemyAttack;
             BulletPrefab.AttackProperties.IsFriendly = false;
-            Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
-            StartCoroutine(CooldownRoutine(bullet.GetCooldown));
+
+            for (int i = 0; i < BulletPrefab.AttackProperties.ProjectileCount; i++)
+            {
+                Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
+
+                if (i == BulletPrefab.AttackProperties.ProjectileCount - 1)
+                {
+                    StartCoroutine(CooldownRoutine(bullet.GetCooldown*2));
+                }
+            }
         }
     }
 

@@ -12,5 +12,7 @@ public class Attack: ScriptableObject
     public float BaseRange;
     public float BaseLifeSpan;
     public bool IsFriendly;
+    public int Spread;
+    public int ProjectileCount;
     public Color Color;
 }

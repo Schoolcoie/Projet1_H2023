@@ -14,6 +14,7 @@ public class Projectile : MonoBehaviour
 
     private float Cooldown;
     public float GetCooldown => Cooldown;
+    public float Spread;
     private float ProjectileLifespan;
     private bool IsFriendly;
 
@@ -25,12 +26,15 @@ public class Projectile : MonoBehaviour
         Speed = AttackProperties.BaseTravelSpeed;
         Range = AttackProperties.BaseRange;
         Cooldown = AttackProperties.BaseAttackSpeed;
+        Spread = AttackProperties.Spread;
         ProjectileLifespan = AttackProperties.BaseLifeSpan;
         IsFriendly = AttackProperties.IsFriendly;
         GetComponent<MeshRenderer>().material.color = AttackProperties.Color;   
     }
     void Start()
     {
+        Speed += UnityEngine.Random.Range(0, Spread / 10);
+        transform.rotation *= Quaternion.AngleAxis(UnityEngine.Random.Range(-Spread, Spread), new Vector3(0, 1, 0));
         StartCoroutine(DeathCoroutine());
     }
 

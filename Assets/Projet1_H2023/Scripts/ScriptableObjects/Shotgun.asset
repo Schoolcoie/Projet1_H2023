@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be6ae3466f105cc41a628a9b7e2a991c, type: 3}
-  m_Name: Sniper
+  m_Name: Shotgun
   m_EditorClassIdentifier: 
   Name: Default
-  BaseDamage: 5
-  BaseTravelSpeed: 50
-  BaseAttackSpeed: 3
-  BaseRange: 20
-  BaseLifeSpan: 3
+  BaseDamage: 2
+  BaseTravelSpeed: 8
+  BaseAttackSpeed: 2
+  BaseRange: 1
+  BaseLifeSpan: 0.5
   IsFriendly: 1
-  Spread: 0
-  ProjectileCount: 1
-  Color: {r: 1, g: 0.88550174, b: 0, a: 0}
+  Spread: 35
+  ProjectileCount: 6
+  Color: {r: 0.99765015, g: 0, b: 1, a: 0}

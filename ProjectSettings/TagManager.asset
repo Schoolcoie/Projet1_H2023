@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - WorldObject
   - Item
+  - Pressure Plate
   layers:
   - Default
   - TransparentFX

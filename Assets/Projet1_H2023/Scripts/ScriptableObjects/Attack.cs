@@ -14,5 +14,6 @@ public class Attack: ScriptableObject
     public bool IsFriendly;
     public int Spread;
     public int ProjectileCount;
+    public float ProjectileDelay;
     public Color Color;
 }

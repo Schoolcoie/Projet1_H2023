@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class PressurePlate : MonoBehaviour
 {
-    private List<GameObject> TriggerableObjects;
-    private Action TriggerEvent;
+    [SerializeField] private List<GameObject> TriggerableObjects;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,8 +22,13 @@ public class PressurePlate : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            foreach (var t in TriggerableObjects)
+            {
+                if(t.TryGetComponent(out ITriggerable obj))
+                    obj.Trigger();
+            }
+
             print($"Player stepped on Pressure Plate to trigger {TriggerableObjects}");
-            //TriggerEvent += other.gameObject.GetComponent<>
         }
     }
 }

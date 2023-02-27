@@ -17,8 +17,6 @@ public class Enemy : MonoBehaviour
 
     public Attack enemyAttack;
 
-    private Projectile instance;
-
 
     private Action<float> DamageAction;
     // Start is called before the first frame update

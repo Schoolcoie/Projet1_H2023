@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    [SerializeField] public Attack AttackProperties;
+    [SerializeField] public ScriptableObject item;
 
     // Start is called before the first frame update
     void Start()
@@ -15,6 +15,21 @@ public class Item : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GetComponent<MeshRenderer>().material.color = AttackProperties.Color;
+        if (item is Attack && item)
+        {
+            Attack temp = (Attack)item;
+            GetComponent<MeshRenderer>().material.color = temp.Color;
+
+        }
+        else if (item is Weapon)
+        {
+            Weapon temp = (Weapon)item;
+            GetComponent<MeshRenderer>().material.color = temp.Color;
+        }
+
+        if (item == null)
+        {
+            //Destroy(gameObject);
+        }
     }
 }

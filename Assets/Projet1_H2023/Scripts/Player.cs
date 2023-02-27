@@ -8,9 +8,14 @@ public class Player : MonoBehaviour
     [SerializeField] private float PlayerSpeed = 5.0f;
     private float MaxHealth = 5;
     private float CurrentHealth;
-    private Attack currentWeapon;
-    [SerializeField] private Attack primaryWeapon;
-    [SerializeField] private Attack secondaryWeapon;
+
+    [SerializeField] private Weapon primaryWeapon;
+    [SerializeField] private Weapon secondaryWeapon;
+    [SerializeField] private Weapon currentWeapon;
+
+    [SerializeField] private Attack primaryAmmo;
+    [SerializeField] private Attack secondaryAmmo;
+
     private float HalfScreenWidth = Screen.width / 2;
     private float HalfScreenHeight = Screen.height / 2;
     private bool IsDead;
@@ -49,8 +54,10 @@ public class Player : MonoBehaviour
         //Events Init
         //Player Init
         CurrentHealth = MaxHealth;
+        primaryWeapon.AttackType = primaryAmmo;
+        secondaryWeapon.AttackType = secondaryAmmo;
         currentWeapon = primaryWeapon;
-        BulletPrefab.AttackProperties = currentWeapon;
+
     }
 
     void Update()
@@ -67,7 +74,6 @@ public class Player : MonoBehaviour
             GetComponent<Collider>().isTrigger = false;
         }
 
-
         if (!IsDead)
         {
             Movement();
@@ -82,25 +88,44 @@ public class Player : MonoBehaviour
                 {
                     currentWeapon = primaryWeapon;
                 }
+            }
 
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                currentWeapon.AttackType = primaryAmmo;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                currentWeapon.AttackType = secondaryAmmo;
             }
 
             if (hoveredItem != null)
             {
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    if (currentWeapon == primaryWeapon)
+                    if (hoveredItem.item is Attack)
                     {
-                        currentWeapon = hoveredItem.AttackProperties;
-                        hoveredItem.AttackProperties = primaryWeapon;
-                        primaryWeapon = currentWeapon;
+                        Attack temp = (Attack)hoveredItem.item;
+
+                        print("Picked up ammo metaphorically");
                     }
-                    else
+
+                    if (hoveredItem.item is Weapon)
                     {
-                        currentWeapon = hoveredItem.AttackProperties;
-                        hoveredItem.AttackProperties = secondaryWeapon;
-                        secondaryWeapon = currentWeapon;
-                        
+                        Weapon temp = (Weapon)hoveredItem.item;
+                        if (currentWeapon == primaryWeapon)
+                        {
+                            currentWeapon = temp;
+                            hoveredItem.item = primaryWeapon;
+                            primaryWeapon = currentWeapon;
+                        }
+                        else
+                        {
+                            currentWeapon = temp;
+                            hoveredItem.item = secondaryWeapon;
+                            secondaryWeapon = currentWeapon;
+                        }
+
                     }
                 }
             }
@@ -120,14 +145,14 @@ public class Player : MonoBehaviour
             {
                 if (Input.GetKey(KeyCode.Mouse1))
                 {
-                    for (int i = 0; i < BulletPrefab.AttackProperties.ProjectileCount; i++)
+                    for (int i = 0; i < currentWeapon.AttackCount; i++)
                     {
-                        BulletPrefab.AttackProperties.IsFriendly = true;
                         Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
-                        bullet.AttackProperties = currentWeapon;
+                        bullet.AttackProperties = currentWeapon.AttackType;
                         bullet.AttackProperties.IsFriendly = true;
+                        bullet.Init();
 
-                        if (i == BulletPrefab.AttackProperties.ProjectileCount - 1)
+                        if (i == currentWeapon.AttackCount - 1)
                         {
                             StartCoroutine(CooldownRoutine(bullet.GetCooldown));
                         }
@@ -192,7 +217,6 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("Item"))
         {
-            print($"Detected collision with item {other.name}");
             hoveredItem = other.gameObject.GetComponent<Item>(); //temporarily only weapons
             //communicate with the UI to show prompt to pick it up
         }
@@ -202,7 +226,6 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("Item"))
         {
-            print($"Left collision with item {other.name}");
             hoveredItem = null;
             //communicate with the UI to hide prompt to pick it up
         }

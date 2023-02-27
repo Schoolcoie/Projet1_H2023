@@ -20,7 +20,7 @@ public class Projectile : MonoBehaviour
 
     private Action<float> DealDamage;
 
-    private void Awake()
+    public void Init()
     {
         Damage = AttackProperties.BaseDamage;
         Speed = AttackProperties.BaseTravelSpeed;
@@ -29,8 +29,9 @@ public class Projectile : MonoBehaviour
         Spread = AttackProperties.Spread;
         ProjectileLifespan = AttackProperties.BaseLifeSpan;
         IsFriendly = AttackProperties.IsFriendly;
-        GetComponent<MeshRenderer>().material.color = AttackProperties.Color;   
+        GetComponent<MeshRenderer>().material.color = AttackProperties.Color;
     }
+
     void Start()
     {
         Speed += UnityEngine.Random.Range(0, Spread / 10);

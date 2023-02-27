@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Ammo: 6
   AttackCount: 1
+  DelayBetweenAttacks: 0
   ReloadTime: 1
+  AttackType: {fileID: 11400000, guid: 7d753f740b19c244488b8df10844e4e0, type: 2}
+  Color: {r: 0, g: 0.9622642, b: 0.036321577, a: 0}

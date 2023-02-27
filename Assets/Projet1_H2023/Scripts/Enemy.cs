@@ -10,10 +10,10 @@ public class Enemy : MonoBehaviour
     private float ContactDamage = 1;
     private bool OnCooldown = false;
     private Vector3 AttackDirection;
+
     [SerializeField] private Projectile BulletPrefab;
 
-    [SerializeField]
-    private GameObject testhealth;
+    [SerializeField] private GameObject testhealth;
 
     public Attack enemyAttack;
 
@@ -23,7 +23,6 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         CurrentHealth = MaxHealth;
-        BulletPrefab.AttackProperties.IsFriendly = false;
     }
 
     // Update is called once per frame
@@ -35,12 +34,13 @@ public class Enemy : MonoBehaviour
 
         if (!OnCooldown)
         {
-            BulletPrefab.AttackProperties = enemyAttack;
-            BulletPrefab.AttackProperties.IsFriendly = false;
 
             for (int i = 0; i < BulletPrefab.AttackProperties.ProjectileCount; i++)
             {
                 Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
+                bullet.AttackProperties = enemyAttack;
+                bullet.AttackProperties.IsFriendly = false;
+                bullet.Init();
 
                 if (i == BulletPrefab.AttackProperties.ProjectileCount - 1)
                 {

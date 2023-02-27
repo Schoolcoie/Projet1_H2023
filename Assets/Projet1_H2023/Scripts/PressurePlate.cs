@@ -16,8 +16,6 @@ public class PressurePlate : MonoBehaviour
                 if(t.TryGetComponent(out ITriggerable obj))
                     obj.Trigger();
             }
-
-            print($"Player stepped on Pressure Plate to trigger {TriggerableObjects}");
         }
     }
 }

@@ -5,6 +5,6 @@ using UnityEngine;
 [CreateAssetMenu]
 public class LootTable : ScriptableObject
 {
-   public List<Attack> Table;
+   public List<ScriptableObject> Table;
 }
 

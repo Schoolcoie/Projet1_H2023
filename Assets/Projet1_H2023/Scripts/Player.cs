@@ -116,18 +116,16 @@ public class Player : MonoBehaviour
 
             Quaternion BulletRotation = Quaternion.LookRotation(new Vector3(AttackDirection.x, 0, AttackDirection.z), Vector3.up);
 
-            print(OnCooldown);
-
             if (!OnCooldown)
             {
                 if (Input.GetKey(KeyCode.Mouse1))
                 {
-                    BulletPrefab.AttackProperties = currentWeapon;
-                    BulletPrefab.AttackProperties.IsFriendly = true;
-
                     for (int i = 0; i < BulletPrefab.AttackProperties.ProjectileCount; i++)
                     {
+                        BulletPrefab.AttackProperties.IsFriendly = true;
                         Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
+                        bullet.AttackProperties = currentWeapon;
+                        bullet.AttackProperties.IsFriendly = true;
 
                         if (i == BulletPrefab.AttackProperties.ProjectileCount - 1)
                         {

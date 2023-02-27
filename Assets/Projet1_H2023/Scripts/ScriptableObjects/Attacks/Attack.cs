@@ -11,9 +11,8 @@ public class Attack: ScriptableObject
     public float BaseAttackSpeed;
     public float BaseRange;
     public float BaseLifeSpan;
-    public bool IsFriendly;
+    public bool IsFriendly; //to replace with prefab variant
     public int Spread;
-    public int ProjectileCount;
-    public float ProjectileDelay;
+    public int ProjectileCount; //to replace with weapon scriptable object
     public Color Color;
 }

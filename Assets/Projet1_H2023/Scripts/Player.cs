@@ -205,6 +205,9 @@ public class Player : MonoBehaviour
             //update the UI
             testhealth.transform.localScale = new Vector3(CurrentHealth / MaxHealth, testhealth.transform.localScale.y, testhealth.transform.localScale.z);
 
+            //add invincibility
+
+
             if (CurrentHealth <= 0)
             {
                 IsDead = true;

@@ -1352,7 +1352,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a018c0a24524f474f8c618197cf97490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TriggerableObjects: []
+  TriggerableObjects:
+  - {fileID: 28228022}
 --- !u!1001 &939760904
 PrefabInstance:
   m_ObjectHideFlags: 0

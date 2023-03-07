@@ -39,12 +39,13 @@ public class Turret : MonoBehaviour, ITriggerable
 
             if (!OnCooldown)
             {
-                BulletPrefab.AttackProperties = enemyAttack;
-                BulletPrefab.AttackProperties.IsFriendly = false;
 
                 for (int i = 0; i < BulletPrefab.AttackProperties.ProjectileCount; i++)
                 {
                     Projectile bullet = Instantiate(BulletPrefab, transform.Find("TurretBarrelExit").position, transform.rotation);
+                    bullet.AttackProperties = enemyAttack;
+                    bullet.AttackProperties.IsFriendly = true;
+                    bullet.Init();
 
                     if (i == BulletPrefab.AttackProperties.ProjectileCount - 1)
                     {
@@ -52,10 +53,7 @@ public class Turret : MonoBehaviour, ITriggerable
                     }
                 }
             }
-
         }
-       
-
     }
 
     private IEnumerator CooldownRoutine(float cooldown)

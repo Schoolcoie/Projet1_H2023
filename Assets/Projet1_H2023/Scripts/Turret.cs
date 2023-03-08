@@ -44,7 +44,7 @@ public class Turret : MonoBehaviour, ITriggerable
                 {
                     Projectile bullet = Instantiate(BulletPrefab, transform.Find("TurretBarrelExit").position, transform.rotation);
                     bullet.AttackProperties = enemyAttack;
-                    bullet.AttackProperties.IsFriendly = true;
+                    bullet.AttackProperties.IsFriendly = false;
                     bullet.Init();
 
                     if (i == BulletPrefab.AttackProperties.ProjectileCount - 1)

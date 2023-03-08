@@ -62,7 +62,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        print(Camera.main.transform.right);
         playerPosition = transform.position;
 
         if (CheatManager.Instance.IsNoClipping)

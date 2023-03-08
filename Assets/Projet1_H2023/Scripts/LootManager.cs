@@ -22,8 +22,8 @@ public class LootManager : MonoBehaviour
         }
     }
 
-    [SerializeField] private Chest chest;
     [SerializeField] private LootTable table;
+
     private void Awake()
     {
         if (instance == null)
@@ -35,18 +35,15 @@ public class LootManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        chest.onchestOpen += GenerateLoot;
-
     }
 
-    private void GenerateLoot(Item loot)
+    public List<ScriptableObject> GenerateLoot()
     {
-        if (loot.item == null)
-        {
-            loot.item = table.Table[Random.Range(0, table.Table.Count)];
-            print($"Put {loot.item.name} in object");
-        }
-        chest.onchestOpen -= GenerateLoot;
+        List<ScriptableObject> m_LootList = new List<ScriptableObject>();
+
+            m_LootList.Add(table.Table[Random.Range(0, table.Table.Count)]);
+            print($"Put {m_LootList[0]} in object");
+
+        return m_LootList; 
     }
 }

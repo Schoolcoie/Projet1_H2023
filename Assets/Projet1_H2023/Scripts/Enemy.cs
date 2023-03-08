@@ -16,9 +16,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private GameObject testhealth;
 
     public Attack enemyAttack;
+    public Weapon enemyWeapon;
 
-
-    private Action<float> DamageAction;
     // Start is called before the first frame update
     void Start()
     {

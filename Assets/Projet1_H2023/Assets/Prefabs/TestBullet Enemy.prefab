@@ -53,7 +53,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8430994619995530452, guid: 732433b993dff3747a14331a8d99968d, type: 3}
       propertyPath: m_Name
-      value: TestBullet
+      value: TestBullet Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 732433b993dff3747a14331a8d99968d, type: 3}

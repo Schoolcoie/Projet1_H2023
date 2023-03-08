@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1739372939601888038}
   - component: {fileID: 1739372939601888041}
   - component: {fileID: 1739372939601888040}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: EnemySprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 1739372940169839197}
   - component: {fileID: 1739372940169839196}
   - component: {fileID: 1739372940169839199}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -165,6 +165,7 @@ MonoBehaviour:
   BulletPrefab: {fileID: -2209696197268910376, guid: 732433b993dff3747a14331a8d99968d, type: 3}
   testhealth: {fileID: 1739372940805486605}
   enemyAttack: {fileID: 11400000, guid: 7d753f740b19c244488b8df10844e4e0, type: 2}
+  enemyWeapon: {fileID: 0}
 --- !u!65 &1739372940169839196
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -205,7 +206,7 @@ GameObject:
   - component: {fileID: 1739372940805486600}
   - component: {fileID: 1739372940805486603}
   - component: {fileID: 1739372940805486602}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: EnemyHealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}

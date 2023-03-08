@@ -5,19 +5,35 @@ using UnityEngine;
 
 public class Chest : MonoBehaviour, ITriggerable
 {
-    [SerializeField] private GameObject chestOpen;
-    [SerializeField] private GameObject chestClosed;
-    [SerializeField] private Item chestLoot;
-    [SerializeField] private LootTable table;
-    public Action<Item> onchestOpen;
+    private GameObject chestOpen;
+    private GameObject chestClosed;
+    [SerializeField] private GameObject itemPrefab;
+    private List<ScriptableObject> lootList;
+    private Transform itemSpawnLocation;
 
-    public void Trigger()
+    private void Start()
     {
-        chestOpen.SetActive(true);
-        chestClosed.SetActive(false);
-        chestLoot.gameObject.SetActive(true);
-        onchestOpen?.Invoke(chestLoot);
+        itemSpawnLocation = gameObject.transform.GetChild(2);
+        chestOpen = gameObject.transform.GetChild(0).gameObject;
+        chestClosed = gameObject.transform.GetChild(1).gameObject;
     }
 
 
+    public void Trigger()
+    {
+        if (chestOpen.activeSelf == false)
+        {
+            chestOpen.SetActive(true);
+            chestClosed.SetActive(false);
+
+            lootList = LootManager.Instance.GenerateLoot();
+
+            for (int x = 0; x < lootList.Count; x++)
+            {
+                GameObject m_item = Instantiate(itemPrefab, itemSpawnLocation);
+                m_item.GetComponent<Item>().item = lootList[x];
+            }
+        }
+       
+    }
 }

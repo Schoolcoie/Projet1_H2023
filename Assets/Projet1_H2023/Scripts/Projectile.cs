@@ -17,6 +17,8 @@ public class Projectile : MonoBehaviour
     public float Spread;
     private float ProjectileLifespan;
     private bool IsFriendly;
+    public bool IsGhostly;
+
 
     private Action<float> DealDamage;
 
@@ -86,13 +88,17 @@ public class Projectile : MonoBehaviour
             }
         }
 
-        if (other.gameObject.CompareTag("WorldObject"))
+        if (IsGhostly == false)
         {
-            //If object is breakable, Action to deal damage to object
+            if (other.gameObject.CompareTag("WorldObject"))
+            {
+                //If object is breakable, Action to deal damage to object
 
-            print("Bullet collided with world object");
-            Destroy(gameObject);
+                print("Bullet collided with world object");
+                Destroy(gameObject);
+            }
         }
+
     }
 
 }

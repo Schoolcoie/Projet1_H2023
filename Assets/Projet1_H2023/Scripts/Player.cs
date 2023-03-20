@@ -63,6 +63,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         playerPosition = transform.position;
+        PlayerSpeed = CheatManager.Instance.PlayerSpeed;
 
         if (CheatManager.Instance.IsNoClipping)
         {
@@ -149,6 +150,10 @@ public class Player : MonoBehaviour
                         Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
                         bullet.AttackProperties = currentWeapon.AttackType;
                         bullet.AttackProperties.IsFriendly = true;
+                        if (CheatManager.Instance.BulletsIgnoreEnvironment)
+                        {
+                            bullet.IsGhostly = true;
+                        }
                         bullet.Init();
 
                         if (i == currentWeapon.AttackCount - 1)

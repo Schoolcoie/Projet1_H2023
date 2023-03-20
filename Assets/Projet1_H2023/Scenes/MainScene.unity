@@ -2763,7 +2763,7 @@ PrefabInstance:
     - target: {fileID: 1692826988234786133, guid: 706b848b071cce3498ce88b2544f9750, type: 3}
       propertyPath: primaryAmmo
       value: 
-      objectReference: {fileID: 11400000, guid: b94ab788677207240b2f3f4a0f6f7acc, type: 2}
+      objectReference: {fileID: 11400000, guid: f9c218b29aabd92479df99ffe8197e66, type: 2}
     - target: {fileID: 1692826988234786133, guid: 706b848b071cce3498ce88b2544f9750, type: 3}
       propertyPath: primaryWeapon
       value: 

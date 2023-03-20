@@ -24,8 +24,13 @@ public class CheatManager : MonoBehaviour
     private bool showWindow = false;
     private bool godMode;
     private bool noClip;
+    private bool ghostBullets;
+    private float playerSpeed = 5.0f;
+    private Rect winRect = new Rect(10, 10, 200, 200);
     public bool InGodMode => godMode; //private getter
     public bool IsNoClipping => noClip;
+    public bool BulletsIgnoreEnvironment => ghostBullets;
+    public float PlayerSpeed => playerSpeed;
 
     private int EnemyTypeSelected = 0;
     private string[] EnemyTypeNames = { "Basic", "Uzi", "Sniper", "Shotgun" };
@@ -71,13 +76,25 @@ public class CheatManager : MonoBehaviour
 
     private void OnGUI()
     {
+
         if (showWindow)
         {
-            godMode = GUILayout.Toggle(godMode, "GodMode");
+            winRect = GUI.Window(0, winRect, WindowFunction, "Cheat Window");
 
-            noClip = GUILayout.Toggle(noClip, "NoClip");
-
-            EnemyTypeSelected = GUILayout.SelectionGrid(EnemyTypeSelected, EnemyTypeNames, 2);
         }
+    }
+
+    void WindowFunction(int windowID)
+    {
+        godMode = GUILayout.Toggle(godMode, "GodMode");
+
+        noClip = GUILayout.Toggle(noClip, "NoClip");
+
+        ghostBullets = GUILayout.Toggle(ghostBullets, "GhostBullets");
+
+        GUILayout.Label("Player Speed");
+        playerSpeed = GUILayout.HorizontalSlider(playerSpeed, 5.0f, 15.0f);
+
+        EnemyTypeSelected = GUILayout.SelectionGrid(EnemyTypeSelected, EnemyTypeNames, 2);
     }
 }

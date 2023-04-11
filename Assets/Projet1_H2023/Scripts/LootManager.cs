@@ -22,8 +22,6 @@ public class LootManager : MonoBehaviour
         }
     }
 
-    [SerializeField] private LootTable table;
-
     private void Awake()
     {
         if (instance == null)
@@ -37,7 +35,7 @@ public class LootManager : MonoBehaviour
         }
     }
 
-    public List<ScriptableObject> GenerateLoot()
+    public List<ScriptableObject> GenerateLoot(LootTable table)
     {
         List<ScriptableObject> m_LootList = new List<ScriptableObject>();
 

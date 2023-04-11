@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5d0fb53ffe814d41b3071204938e403, type: 3}
-  m_Name: Muscular Beef
+  m_Name: Target Practice Dummy
   m_EditorClassIdentifier: 
-  Icon: {fileID: 2800000, guid: 31d3d1a0644357049ba1aecfe696f498, type: 3}
-  Name: Muscular Beef
-  DamageMultiplier: 1.1
-  AttackSpeedMultiplier: 0
-  SpeedMultiplier: 0.75
-  HPMultiplier: 1.25
+  Icon: {fileID: 2800000, guid: ba26ca4c4b4f156448025ccef1f7db11, type: 3}
+  Name: Target Practice Dummy
+  DamageMultiplier: 0
+  AttackSpeedMultiplier: 0.8
+  SpeedMultiplier: 0
+  HPMultiplier: 1.15
   ProjectileSpeedMultiplier: 0
   RangeMultiplier: 0
-  AccuracyMultiplier: 0
-  ProjectileSizeMultiplier: 1.5
+  AccuracyMultiplier: 1.5
+  ProjectileSizeMultiplier: 0

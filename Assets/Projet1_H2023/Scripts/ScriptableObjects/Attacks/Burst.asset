@@ -21,5 +21,4 @@ MonoBehaviour:
   IsFriendly: 1
   Spread: 5
   ProjectileCount: 3
-  ProjectileDelay: 0.3
   Color: {r: 1, g: 0.45650405, b: 0, a: 0}

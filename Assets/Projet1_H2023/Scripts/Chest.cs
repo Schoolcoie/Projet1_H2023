@@ -8,6 +8,7 @@ public class Chest : MonoBehaviour, ITriggerable
     private GameObject chestOpen;
     private GameObject chestClosed;
     [SerializeField] private GameObject itemPrefab;
+    [SerializeField] private LootTable lootTable;
     private List<ScriptableObject> lootList;
     private Transform itemSpawnLocation;
 
@@ -18,7 +19,6 @@ public class Chest : MonoBehaviour, ITriggerable
         chestClosed = gameObject.transform.GetChild(1).gameObject;
     }
 
-
     public void Trigger()
     {
         if (chestOpen.activeSelf == false)
@@ -26,7 +26,7 @@ public class Chest : MonoBehaviour, ITriggerable
             chestOpen.SetActive(true);
             chestClosed.SetActive(false);
 
-            lootList = LootManager.Instance.GenerateLoot();
+            lootList = LootManager.Instance.GenerateLoot(lootTable);
 
             for (int x = 0; x < lootList.Count; x++)
             {
@@ -34,6 +34,5 @@ public class Chest : MonoBehaviour, ITriggerable
                 m_item.GetComponent<Item>().item = lootList[x];
             }
         }
-       
     }
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spread
   m_EditorClassIdentifier: 
   Name: Shotgun
-  BaseDamage: 2
+  BaseDamage: 1
   BaseTravelSpeed: 8
   BaseAttackSpeed: 2
   BaseRange: 1

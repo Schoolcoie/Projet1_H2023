@@ -14,9 +14,14 @@ public class Player : MonoBehaviour
 
     //Stat modifiers
 
-    private float PlayerDamageMultiplier = 1.0f;
-    private float PlayerReloadMultiplier = 1.0f;
-    private float PlayerAttackSpeedMultiplier = 1.0f;
+    [SerializeField] private float PlayerDamageMultiplier = 1.0f;
+    [SerializeField] private float PlayerAttackSpeedMultiplier = 1.0f;
+    [SerializeField] private float PlayerRangeMultiplier = 1.0f;
+    [SerializeField] private float PlayerProjectileSpeedMultiplier = 1.0f;
+    [SerializeField] private float PlayerAccuracyMultiplier = 1.0f;
+    [SerializeField] private float PlayerProjectileSizeMultiplier = 1.0f;
+
+    [SerializeField] private int PlayerProjectileModifier = 0;
 
     //Weapons
 
@@ -32,7 +37,7 @@ public class Player : MonoBehaviour
 
     //Passive Items
 
-    private List<PassiveItems> currentItems;
+    private List<PassiveItem> currentItems = new List<PassiveItem>();
 
     //private List<>;
 
@@ -84,7 +89,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         playerPosition = transform.position;
-        PlayerSpeed = CheatManager.Instance.PlayerSpeed;
+        //PlayerSpeed = CheatManager.Instance.PlayerSpeed;
 
         if (CheatManager.Instance.IsNoClipping)
         {
@@ -163,6 +168,14 @@ public class Player : MonoBehaviour
                             }
                         }
                     }
+
+                    if (hoveredItem.item is PassiveItem)
+                    {
+                        currentItems.Add((PassiveItem)hoveredItem.item);
+                        OnItemObtained((PassiveItem)hoveredItem.item);
+                        hoveredItem.item = null;
+
+                    }
                 }
             }
 
@@ -181,7 +194,7 @@ public class Player : MonoBehaviour
             {
                 if (Input.GetKey(KeyCode.Mouse1))
                 {
-                    for (int i = 0; i < currentWeapon.AttackCount; i++)
+                    for (int i = 0; i < currentWeapon.AttackCount + PlayerProjectileModifier; i++)
                     {
                         Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
                         bullet.AttackProperties = currentAmmo;
@@ -192,7 +205,7 @@ public class Player : MonoBehaviour
                             bullet.IsGhostly = true;
                         }
 
-                        bullet.Init(PlayerDamageMultiplier, PlayerReloadMultiplier, PlayerAttackSpeedMultiplier);
+                        bullet.Init(PlayerDamageMultiplier, PlayerAttackSpeedMultiplier, PlayerAccuracyMultiplier, PlayerRangeMultiplier, PlayerProjectileSpeedMultiplier, PlayerProjectileSizeMultiplier);
 
                         if (i == currentWeapon.AttackCount - 1)
                         {
@@ -281,18 +294,12 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnItemObtained(PassiveItems item)
+    private void OnItemObtained(PassiveItem item)
     {
         if (item.DamageMultiplier != 0)
         {
             PlayerDamageMultiplier *= item.DamageMultiplier;
             print("Changed Player Damage");
-        }
-
-        if (item.ReloadSpeedMultiplier != 0)
-        {
-            PlayerReloadMultiplier *= item.ReloadSpeedMultiplier;
-            print("Changed Player Reload");
         }
 
         if (item.AttackSpeedMultiplier != 0)
@@ -308,13 +315,59 @@ public class Player : MonoBehaviour
             print("Changed Player Speed");
         }
 
+        if (item.HPMultiplier != 0)
+        {
+            float temp = MaxHealth;
+            MaxHealth *= item.HPMultiplier;
+            CurrentHealth += MaxHealth - temp;
+            print("Changed Player Max Health");
+        }
+
+        if (item.AccuracyMultiplier != 0)
+        {
+            PlayerAccuracyMultiplier *= item.AccuracyMultiplier;
+
+            print("Changed Player Spread");
+        }
+
+        if (item.ProjectileSpeedMultiplier != 0)
+        {
+            PlayerProjectileSpeedMultiplier *= item.ProjectileSpeedMultiplier;
+
+            print("Changed Player Projectile Speed");
+        }
+
+        if (item.RangeMultiplier != 0)
+        {
+            PlayerRangeMultiplier *= item.RangeMultiplier;
+
+            print("Changed Player Range");
+        }
+
+        if (item.ProjectileSizeMultiplier != 0)
+        {
+            PlayerProjectileSizeMultiplier *= item.ProjectileSizeMultiplier;
+
+            print("Changed Player Projectile Size");
+        }
+
+        if (item.ExtraProjectileModifier != 0)
+        {
+            PlayerProjectileModifier += item.ExtraProjectileModifier;
+
+            print("Changed Player Projectile Amount");
+        }
+
+
+
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Item"))
         {
-            hoveredItem = other.gameObject.GetComponent<Item>(); //temporarily only weapons
+            hoveredItem = other.gameObject.GetComponent<Item>();
             //communicate with the UI to show prompt to pick it up
         }
     }

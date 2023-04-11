@@ -35,6 +35,7 @@ public class CheatManager : MonoBehaviour
     private int EnemyTypeSelected = 0;
     private string[] EnemyTypeNames = { "Basic", "Uzi", "Sniper", "Shotgun" };
     [SerializeField] private Attack[] EnemyTypes;
+    [SerializeField] private Weapon EnemyWeapon;
 
     [SerializeField] private GameObject EnemyPrefab;
 
@@ -55,6 +56,7 @@ public class CheatManager : MonoBehaviour
     private void Update()
     {
         EnemyPrefab.GetComponent<Enemy>().enemyAmmo = EnemyTypes[EnemyTypeSelected];
+        EnemyPrefab.GetComponent<Enemy>().enemyWeapon = EnemyWeapon;
 
 #if DEBUG
         if (Input.GetKeyDown(KeyCode.F1))

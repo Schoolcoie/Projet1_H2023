@@ -26,10 +26,15 @@ public class Item : MonoBehaviour
             Weapon temp = (Weapon)item;
             GetComponent<MeshRenderer>().material.color = temp.Color;
         }
+        else if (item is PassiveItem)
+        {
+            PassiveItem temp = (PassiveItem)item;
+            GetComponent<MeshRenderer>().materials[0].mainTexture = temp.Icon;
+        }
 
         if (item == null)
         {
-            //Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }

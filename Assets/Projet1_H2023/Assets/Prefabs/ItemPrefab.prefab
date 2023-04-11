@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4577189986987701016}
   - component: {fileID: 4577189986987701017}
   - component: {fileID: 4577189986987700965}
+  - component: {fileID: -6237890392699214919}
   m_Layer: 6
   m_Name: ItemPrefab
   m_TagString: Item
@@ -109,3 +110,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+--- !u!114 &-6237890392699214919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4577189986987701018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84ed510ad07d3d24b9484d1b8b4d3f68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -21,14 +21,15 @@ public class Projectile : MonoBehaviour
 
 
 
-    public void Init(float damagemultiplier = 1, float reloadspeedmodifier = 1, float attackspeedmultiplier = 1)
+    public void Init(float damagemultiplier = 1, float attackspeedmultiplier = 1, float accuracymultiplier = 1, float rangemultiplier = 1, float projectilespeedmultiplier = 1, float projectilesizemultiplier = 1)
     {
-        Damage = AttackProperties.BaseDamage;
-        Speed = AttackProperties.BaseTravelSpeed;
+        Damage = AttackProperties.BaseDamage * damagemultiplier;
+        Speed = AttackProperties.BaseTravelSpeed * projectilespeedmultiplier;
         Range = AttackProperties.BaseRange;
-        Cooldown = AttackProperties.BaseAttackSpeed;
-        Spread = AttackProperties.Spread;
-        ProjectileLifespan = AttackProperties.BaseLifeSpan;
+        Cooldown = AttackProperties.BaseAttackSpeed / attackspeedmultiplier;
+        Spread = AttackProperties.Spread / accuracymultiplier;
+        ProjectileLifespan = AttackProperties.BaseLifeSpan * rangemultiplier;
+        transform.localScale = transform.localScale * projectilesizemultiplier;
         IsFriendly = AttackProperties.IsFriendly;
         GetComponent<MeshRenderer>().material.color = AttackProperties.Color;
     }

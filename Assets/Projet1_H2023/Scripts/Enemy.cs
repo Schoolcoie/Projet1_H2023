@@ -34,7 +34,7 @@ public class Enemy : MonoBehaviour
 
         Quaternion BulletRotation = Quaternion.LookRotation(new Vector3(AttackDirection.x, 0, AttackDirection.z), Vector3.up);
 
-        if (!OnCooldown)
+        if (!OnCooldown) //also check for distance
         {
 
             for (int i = 0; i < enemyWeapon.AttackCount; i++)

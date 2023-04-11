@@ -20,9 +20,8 @@ public class Projectile : MonoBehaviour
     public bool IsGhostly;
 
 
-    private Action<float> DealDamage;
 
-    public void Init()
+    public void Init(float damagemultiplier = 1, float reloadspeedmodifier = 1, float attackspeedmultiplier = 1)
     {
         Damage = AttackProperties.BaseDamage;
         Speed = AttackProperties.BaseTravelSpeed;
@@ -60,9 +59,8 @@ public class Projectile : MonoBehaviour
             {
                 print("Bullet collided with an Enemy");
 
-                DealDamage += other.gameObject.GetComponent<Enemy>().ApplyDamage;
-                DealDamage(Damage);
-                DealDamage -= other.gameObject.GetComponent<Enemy>().ApplyDamage;
+                other.gameObject.GetComponent<Enemy>().ApplyDamage(Damage);
+
 
                 print($"Bullet dealt {Damage} to {other.gameObject.name}");
 
@@ -76,9 +74,7 @@ public class Projectile : MonoBehaviour
             {
                 print("Bullet collided with the Player");
 
-                DealDamage += other.gameObject.GetComponent<Player>().ApplyDamage;
-                DealDamage(Damage);
-                DealDamage -= other.gameObject.GetComponent<Player>().ApplyDamage;
+                other.gameObject.GetComponent<Player>().ApplyDamage(Damage);
 
                 //Apply invincibility frames
 

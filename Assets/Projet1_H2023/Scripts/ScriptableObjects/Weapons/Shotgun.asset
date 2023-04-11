@@ -16,5 +16,5 @@ MonoBehaviour:
   AttackCount: 5
   DelayBetweenAttacks: 0
   ReloadTime: 3
-  AttackType: {fileID: 11400000, guid: 9be2ce3bcb7e792499d0af2276eea714, type: 2}
+  DefaultAttackType: {fileID: 11400000, guid: 9be2ce3bcb7e792499d0af2276eea714, type: 2}
   Color: {r: 0.9699626, g: 0, b: 1, a: 0}

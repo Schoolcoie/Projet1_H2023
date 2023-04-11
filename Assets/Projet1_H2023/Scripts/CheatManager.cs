@@ -54,12 +54,14 @@ public class CheatManager : MonoBehaviour
 
     private void Update()
     {
-        EnemyPrefab.GetComponent<Enemy>().enemyAttack = EnemyTypes[EnemyTypeSelected];
+        EnemyPrefab.GetComponent<Enemy>().enemyAmmo = EnemyTypes[EnemyTypeSelected];
 
+#if DEBUG
         if (Input.GetKeyDown(KeyCode.F1))
         {
             showWindow = !showWindow;
         }
+#endif
 
         if (showWindow)
         {

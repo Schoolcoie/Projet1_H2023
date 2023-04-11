@@ -15,13 +15,16 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] private GameObject testhealth;
 
-    public Attack enemyAttack;
+    public Attack enemyAmmo;
     public Weapon enemyWeapon;
 
     // Start is called before the first frame update
     void Start()
     {
         CurrentHealth = MaxHealth;
+
+        if(enemyAmmo == null)
+        enemyAmmo = enemyWeapon.DefaultAttackType;
     }
 
     // Update is called once per frame
@@ -34,10 +37,10 @@ public class Enemy : MonoBehaviour
         if (!OnCooldown)
         {
 
-            for (int i = 0; i < BulletPrefab.AttackProperties.ProjectileCount; i++)
+            for (int i = 0; i < enemyWeapon.AttackCount; i++)
             {
                 Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
-                bullet.AttackProperties = enemyAttack;
+                bullet.AttackProperties = enemyAmmo;
                 bullet.AttackProperties.IsFriendly = false;
                 bullet.Init();
 

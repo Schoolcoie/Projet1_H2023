@@ -9,7 +9,7 @@ public class Weapon : ScriptableObject
     public int AttackCount;
     public float DelayBetweenAttacks;
     public float ReloadTime;
-    public Attack AttackType;
+    public Attack DefaultAttackType;
     public Color Color;
 
     //public AttackPattern

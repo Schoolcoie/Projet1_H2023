@@ -5,16 +5,36 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Rigidbody PlayerBody;
+
+    //Base Stats
+
     [SerializeField] private float PlayerSpeed = 5.0f;
     private float MaxHealth = 5;
     private float CurrentHealth;
+
+    //Stat modifiers
+
+    private float PlayerDamageMultiplier = 1.0f;
+    private float PlayerReloadMultiplier = 1.0f;
+    private float PlayerAttackSpeedMultiplier = 1.0f;
+
+    //Weapons
 
     [SerializeField] private Weapon primaryWeapon;
     [SerializeField] private Weapon secondaryWeapon;
     [SerializeField] private Weapon currentWeapon;
 
+    //Ammos
+
     [SerializeField] private Attack primaryAmmo;
     [SerializeField] private Attack secondaryAmmo;
+    [SerializeField] private Attack currentAmmo;
+
+    //Passive Items
+
+    private List<PassiveItems> currentItems;
+
+    //private List<>;
 
     private float HalfScreenWidth = Screen.width / 2;
     private float HalfScreenHeight = Screen.height / 2;
@@ -31,6 +51,7 @@ public class Player : MonoBehaviour
 
     int PlaneLayer = 1 << 3;
 
+    private bool IsInvulnerable = false;
     private bool OnCooldown = false;
 
     private Vector3 AttackDirection;
@@ -54,10 +75,10 @@ public class Player : MonoBehaviour
         //Events Init
         //Player Init
         CurrentHealth = MaxHealth;
-        primaryWeapon.AttackType = primaryAmmo;
-        secondaryWeapon.AttackType = secondaryAmmo;
         currentWeapon = primaryWeapon;
+        currentAmmo = primaryAmmo;
 
+        //Initialize stats
     }
 
     void Update()
@@ -92,11 +113,11 @@ public class Player : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                currentWeapon.AttackType = primaryAmmo;
+                currentAmmo = primaryAmmo;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                currentWeapon.AttackType = secondaryAmmo;
+                currentAmmo = secondaryAmmo;
             }
 
             if (hoveredItem != null)
@@ -107,7 +128,18 @@ public class Player : MonoBehaviour
                     {
                         Attack temp = (Attack)hoveredItem.item;
 
-                        print("Picked up ammo metaphorically");
+                        if (currentAmmo == primaryAmmo)
+                        {
+                            currentAmmo = temp;
+                            hoveredItem.item = primaryAmmo;
+                            primaryAmmo = temp;
+                        }
+                        else
+                        {
+                            secondaryAmmo = temp;
+                            hoveredItem.item = secondaryAmmo;
+                            secondaryAmmo = temp;
+                        }
                     }
 
                     if (hoveredItem.item is Weapon)
@@ -124,8 +156,12 @@ public class Player : MonoBehaviour
                             currentWeapon = temp;
                             hoveredItem.item = secondaryWeapon;
                             secondaryWeapon = currentWeapon;
-                        }
 
+                            if (secondaryAmmo == null)
+                            {
+                                secondaryAmmo = secondaryWeapon.DefaultAttackType;
+                            }
+                        }
                     }
                 }
             }
@@ -148,13 +184,15 @@ public class Player : MonoBehaviour
                     for (int i = 0; i < currentWeapon.AttackCount; i++)
                     {
                         Projectile bullet = Instantiate(BulletPrefab, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), BulletRotation);
-                        bullet.AttackProperties = currentWeapon.AttackType;
+                        bullet.AttackProperties = currentAmmo;
                         bullet.AttackProperties.IsFriendly = true;
+
                         if (CheatManager.Instance.BulletsIgnoreEnvironment)
                         {
                             bullet.IsGhostly = true;
                         }
-                        bullet.Init();
+
+                        bullet.Init(PlayerDamageMultiplier, PlayerReloadMultiplier, PlayerAttackSpeedMultiplier);
 
                         if (i == currentWeapon.AttackCount - 1)
                         {
@@ -172,6 +210,32 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(cooldown);
         OnCooldown = false;
     }
+
+    private IEnumerator InvulnerabilityRoutine(float invuln)
+    {
+        IsInvulnerable = true;
+        StartCoroutine(InvulnerabilityBlink());
+        yield return new WaitForSeconds(invuln);
+        IsInvulnerable = false;
+    }
+
+    private IEnumerator InvulnerabilityBlink()
+    {
+        Color spritecolor = transform.GetChild(0).GetComponent<SpriteRenderer>().material.color;
+
+        while (IsInvulnerable == true)
+        {
+            print("blinking");
+            spritecolor = new Color(spritecolor.r, spritecolor.g, spritecolor.b, 0.5f);
+            transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = spritecolor;
+            yield return new WaitForSeconds(0.075f);
+            spritecolor = new Color(spritecolor.r, spritecolor.g, spritecolor.b, 1);
+            transform.GetChild(0).GetComponent<SpriteRenderer>().material.color = spritecolor;
+            yield return new WaitForSeconds(0.075f);
+        }
+    }
+
+
 
     private void Movement()
     {
@@ -201,23 +265,49 @@ public class Player : MonoBehaviour
 
     public void ApplyDamage(float Damage)
     {
-        if (!CheatManager.Instance.InGodMode)
+        if (!CheatManager.Instance.InGodMode && IsInvulnerable == false)
         {
-
             CurrentHealth -= Damage;
 
-            //update the UI
             testhealth.transform.localScale = new Vector3(CurrentHealth / MaxHealth, testhealth.transform.localScale.y, testhealth.transform.localScale.z);
-
-            //add invincibility
-
 
             if (CurrentHealth <= 0)
             {
                 IsDead = true;
                 Destroy(gameObject);
             }
+
+            StartCoroutine(InvulnerabilityRoutine(1.5f));
         }
+    }
+
+    private void OnItemObtained(PassiveItems item)
+    {
+        if (item.DamageMultiplier != 0)
+        {
+            PlayerDamageMultiplier *= item.DamageMultiplier;
+            print("Changed Player Damage");
+        }
+
+        if (item.ReloadSpeedMultiplier != 0)
+        {
+            PlayerReloadMultiplier *= item.ReloadSpeedMultiplier;
+            print("Changed Player Reload");
+        }
+
+        if (item.AttackSpeedMultiplier != 0)
+        {
+            PlayerAttackSpeedMultiplier *= item.AttackSpeedMultiplier;
+            print("Changed Player Attack Speed");
+        }
+
+        if (item.SpeedMultiplier != 0)
+        {
+            PlayerSpeed *= item.SpeedMultiplier;
+
+            print("Changed Player Speed");
+        }
+
     }
 
     private void OnTriggerEnter(Collider other)

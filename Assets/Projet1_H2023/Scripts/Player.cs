@@ -109,10 +109,13 @@ public class Player : MonoBehaviour
                 if (currentWeapon == primaryWeapon && secondaryWeapon != null)
                 {
                     currentWeapon = secondaryWeapon;
+                    currentAmmo = secondaryAmmo;
+
                 }
                 else if (currentWeapon == secondaryWeapon && primaryWeapon != null)
                 {
                     currentWeapon = primaryWeapon;
+                    currentAmmo = primaryAmmo;
                 }
             }
 
@@ -200,6 +203,18 @@ public class Player : MonoBehaviour
                         bullet.AttackProperties = currentAmmo;
                         bullet.AttackProperties.IsFriendly = true;
 
+                        //Add projectile effects if applicable
+                        foreach (PassiveItem item in currentItems)
+                        {
+                            if (item.Effects != null)
+                            {
+                                for (int j = 0; j < item.Effects.Count; j++)
+                                {
+                                    bullet.AddProjectileEffect(item.Effects[j]);
+                                }
+                            }
+                        }
+
                         if (CheatManager.Instance.BulletsIgnoreEnvironment)
                         {
                             bullet.IsGhostly = true;
@@ -247,8 +262,6 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(0.075f);
         }
     }
-
-
 
     private void Movement()
     {
@@ -357,14 +370,11 @@ public class Player : MonoBehaviour
 
             print("Changed Player Projectile Amount");
         }
-
-
-
-
     }
 
     private void OnTriggerEnter(Collider other)
     {
+
         if (other.CompareTag("Item"))
         {
             hoveredItem = other.gameObject.GetComponent<Item>();

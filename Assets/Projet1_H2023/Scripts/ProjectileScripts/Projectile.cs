@@ -7,7 +7,7 @@ public class Projectile : MonoBehaviour
 {
     public Attack AttackProperties; //need to turn this into an action
 
-    private float Damage;
+    public float Damage;
     public float GetDamage => Damage;
     private float Speed;
     private float Range;
@@ -18,6 +18,11 @@ public class Projectile : MonoBehaviour
     private float ProjectileLifespan;
     private bool IsFriendly;
     public bool IsGhostly;
+
+    private bool SpecialWallCollision;
+    private bool SpecialEnemyCollision;
+
+    private List<ProjectileEffect> EffectsList = new List<ProjectileEffect>();
 
 
 
@@ -32,6 +37,7 @@ public class Projectile : MonoBehaviour
         transform.localScale = transform.localScale * projectilesizemultiplier;
         IsFriendly = AttackProperties.IsFriendly;
         GetComponent<MeshRenderer>().material.color = AttackProperties.Color;
+
     }
 
     void Start()
@@ -39,16 +45,56 @@ public class Projectile : MonoBehaviour
         Speed += UnityEngine.Random.Range(0, Spread / 10);
         transform.rotation *= Quaternion.AngleAxis(UnityEngine.Random.Range(-Spread, Spread), new Vector3(0, 1, 0));
         StartCoroutine(DeathCoroutine());
+
+        foreach (ProjectileEffect eff in EffectsList)
+        {
+            eff.OnStartOverride();
+        }
     }
 
     void Update()
     {   
         transform.Translate(Vector3.forward * Time.deltaTime * Speed);
+
+        foreach (ProjectileEffect eff in EffectsList)
+        {
+            eff.OnUpdate();
+        }
+    }
+
+    public void AddProjectileEffect(PassiveItem.EProjectileEffects effect)
+    {
+        switch (effect)
+        {
+            case PassiveItem.EProjectileEffects.Bomb:
+                EffectsList.Add(new Bomb(this));
+                break;
+            case PassiveItem.EProjectileEffects.Pierce:
+                EffectsList.Add(new Pierce(this));
+                SpecialEnemyCollision = true;
+                break;
+            case PassiveItem.EProjectileEffects.Bounce:
+                EffectsList.Add(new Bounce(this));
+                SpecialWallCollision = true;
+                break;
+            case PassiveItem.EProjectileEffects.Zigzag:
+                EffectsList.Add(new Zigzag(this));
+                break;
+            case PassiveItem.EProjectileEffects.RandomSize:
+                EffectsList.Add(new RandomSize(this));
+                break;
+        }
     }
 
     private IEnumerator DeathCoroutine()
     {
         yield return new WaitForSeconds(ProjectileLifespan);
+
+        foreach (ProjectileEffect eff in EffectsList)
+        {
+            eff.OnProjectileEnd();
+        }
+
         Destroy(gameObject);
     }
 
@@ -65,7 +111,14 @@ public class Projectile : MonoBehaviour
 
                 print($"Bullet dealt {Damage} to {other.gameObject.name}");
 
-                Destroy(gameObject);
+
+                foreach (ProjectileEffect eff in EffectsList)
+                {
+                    eff.OnEnemyCollisionEnter();
+                }
+
+                if (SpecialEnemyCollision == false)
+                    Destroy(gameObject);
             }
         }
         else
@@ -81,6 +134,7 @@ public class Projectile : MonoBehaviour
 
                 print($"Bullet dealt {Damage} to {other.gameObject.name}");
 
+
                 Destroy(gameObject);
             }
         }
@@ -92,10 +146,21 @@ public class Projectile : MonoBehaviour
                 //If object is breakable, Action to deal damage to object
 
                 print("Bullet collided with world object");
-                Destroy(gameObject);
+
+                foreach (ProjectileEffect eff in EffectsList)
+                {
+                    eff.OnWallCollisionEnter();
+                }
+
+                if(SpecialWallCollision == false)
+                    Destroy(gameObject);
             }
         }
+    }
 
+    public void OnDestroy()
+    {
+        Destroy(gameObject);
     }
 
 }

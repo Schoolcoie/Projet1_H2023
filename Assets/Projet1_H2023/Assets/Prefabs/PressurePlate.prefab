@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4577189986987701018
+--- !u!1 &8166979223443398591
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,49 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4577189986987700966}
-  - component: {fileID: 4577189986987700967}
-  - component: {fileID: 4577189986987701016}
-  - component: {fileID: 4577189986987701017}
-  - component: {fileID: 4577189986987700965}
-  - component: {fileID: -6237890392699214919}
-  m_Layer: 6
-  m_Name: ItemPrefab
-  m_TagString: Item
+  - component: {fileID: 8166979223443398587}
+  - component: {fileID: 8166979223443398586}
+  - component: {fileID: 8166979223443398585}
+  - component: {fileID: 8166979223443398584}
+  - component: {fileID: 8166979223443398580}
+  m_Layer: 0
+  m_Name: PressurePlate
+  m_TagString: Pressure Plate
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4577189986987700966
+--- !u!4 &8166979223443398587
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4577189986987701018}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_GameObject: {fileID: 8166979223443398591}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 13.004, y: 0.057, z: -0.5}
+  m_LocalScale: {x: 1, y: 0.1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!33 &4577189986987700967
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &8166979223443398586
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4577189986987701018}
+  m_GameObject: {fileID: 8166979223443398591}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &4577189986987701016
+--- !u!23 &8166979223443398585
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4577189986987701018}
+  m_GameObject: {fileID: 8166979223443398591}
   m_Enabled: 1
-  m_CastShadows: 0
+  m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -84,41 +83,30 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &4577189986987701017
-SphereCollider:
+--- !u!65 &8166979223443398584
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4577189986987701018}
+  m_GameObject: {fileID: 8166979223443398591}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4577189986987700965
+--- !u!114 &8166979223443398580
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4577189986987701018}
+  m_GameObject: {fileID: 8166979223443398591}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 533bf90a9ca8ec449bfc456b1bb9271c, type: 3}
+  m_Script: {fileID: 11500000, guid: a018c0a24524f474f8c618197cf97490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 0}
---- !u!114 &-6237890392699214919
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4577189986987701018}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84ed510ad07d3d24b9484d1b8b4d3f68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  TriggerableObjects:
+  - {fileID: 0}

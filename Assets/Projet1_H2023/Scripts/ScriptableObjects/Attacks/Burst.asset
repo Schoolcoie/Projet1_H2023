@@ -18,7 +18,7 @@ MonoBehaviour:
   BaseAttackSpeed: 0.75
   BaseRange: 3
   BaseLifeSpan: 2
-  IsFriendly: 1
+  IsFriendly: 0
   Spread: 5
   ProjectileCount: 3
   Color: {r: 1, g: 0.45650405, b: 0, a: 0}

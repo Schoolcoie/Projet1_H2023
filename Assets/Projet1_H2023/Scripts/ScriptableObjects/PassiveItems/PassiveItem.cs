@@ -7,6 +7,7 @@ public class PassiveItem : ScriptableObject
 {
     public Texture2D Icon;
     public string Name = "Default";
+    public string Description = "Test";
     public float DamageMultiplier;
     public float AttackSpeedMultiplier;
     public float SpeedMultiplier;
@@ -17,4 +18,15 @@ public class PassiveItem : ScriptableObject
     public float ProjectileSizeMultiplier;
 
     public int ExtraProjectileModifier;
+
+    [System.Serializable]
+    public enum EProjectileEffects
+    {
+        Bomb,
+        Pierce,
+        Bounce,
+        Zigzag,
+        RandomSize
+    }
+    public List<EProjectileEffects> Effects;
 }

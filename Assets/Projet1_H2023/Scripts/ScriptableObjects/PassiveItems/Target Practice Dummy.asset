@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 2800000, guid: ba26ca4c4b4f156448025ccef1f7db11, type: 3}
   Name: Target Practice Dummy
+  Description: Test
   DamageMultiplier: 0
   AttackSpeedMultiplier: 0.8
   SpeedMultiplier: 0
@@ -22,3 +23,5 @@ MonoBehaviour:
   RangeMultiplier: 0
   AccuracyMultiplier: 1.5
   ProjectileSizeMultiplier: 0
+  ExtraProjectileModifier: 0
+  Effects: 

@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
 public class ItemGeneratorWindow : EditorWindow
 {
+
     private static ItemGeneratorWindow m_Window = null;
 
     [MenuItem("Window/Bart/ItemGeneratorWindow")]
@@ -17,18 +19,16 @@ public class ItemGeneratorWindow : EditorWindow
         }
     }
 
-
-    Dictionary<string, bool> m_ToggleDict = new Dictionary<string, bool>();
-
-    private bool ToggleName;
-    private bool ToggleDamage;
-    private bool ToggleAttackSpeed;
+    List<string> m_ToggleStateNames = new List<string>();
+    List<bool> m_ToggleStates = new List<bool>();
 
     private void OnEnable()
     {
-        m_ToggleDict.Add(nameof(ToggleName), ToggleName);
-        m_ToggleDict.Add(nameof(ToggleDamage), ToggleDamage);
-        m_ToggleDict.Add(nameof(ToggleAttackSpeed), ToggleAttackSpeed);
+       foreach (var field in typeof(PassiveItem).GetFields())
+       {
+            m_ToggleStateNames.Add(field.Name);
+            m_ToggleStates.Add(false); 
+       }
     }
     
 
@@ -36,30 +36,69 @@ public class ItemGeneratorWindow : EditorWindow
     {
         Debug.Log("OnGui");
 
-       foreach (KeyValuePair<string, bool> valuePair in m_ToggleDict)
+        for (int i = 0; i < m_ToggleStates.Count; i++)
         {
-            m_ToggleDict[valuePair.Key] = GUILayout.Toggle(m_ToggleDict[valuePair.Key], valuePair.Key);
+            m_ToggleStates[i] = GUILayout.Toggle(m_ToggleStates[i], m_ToggleStateNames[i]);
         }
-
 
 
         if (GUILayout.Button("Generate Item"))
         {
             PassiveItem so = ScriptableObject.CreateInstance<PassiveItem>();
 
-            if (m_ToggleDict["ToggleName"])
+            for (int i = 0; i < m_ToggleStates.Count; i++)
             {
-                so.Name = "Default";
-            }    
+                if (m_ToggleStates[i] == true)
+                {
+                    FieldInfo temp = typeof(PassiveItem).GetField(m_ToggleStateNames[i]);
+                    temp.SetValue(so, Randomize(temp.FieldType));
 
-            if (m_ToggleDict["ToggleDamage"])
-            {
-                so.DamageMultiplier = Mathf.Round(UnityEngine.Random.Range(0.1f, 2f) * 100) / 100;
-            } 
-
-            AssetDatabase.CreateAsset(so, "/Assets/Projet1_H2023/Scripts/ScriptableObjects/PassiveItems");
+                    Debug.Log(temp.GetValue(so));
+                }
+               
+            }
+            //DestroyImmediate(so);
+            AssetDatabase.CreateAsset(so, "Assets/Projet1_H2023/Scripts/ScriptableObjects/PassiveItems/Default.asset");
+            AssetDatabase.SaveAssets();
         }
 
 
+    }
+
+    private object Randomize(Type type)
+    {
+        if (Type.Equals(type, typeof(string)))
+        {
+            Debug.Log("Its a string!");
+            return "Gaming";
+        }
+
+        if (Type.Equals(type, typeof(float)))
+        {
+            Debug.Log("Its a float!");
+            return Mathf.Round(UnityEngine.Random.Range(0.1f, 2) * 100) / 100;
+        }
+
+        if (Type.Equals(type, typeof(int)))
+        {
+            Debug.Log("Its an integer!");
+            return UnityEngine.Random.Range(1, 5);
+        }
+
+        Debug.Log(type);
+
+        if (type is ICollection<Enum>)
+        {
+            Debug.Log("Its an Enum!");
+            int enumcount = Enum.GetValues(type).Length;
+            string[] enumname = Enum.GetNames(type);
+            var temp = Enum.Parse(type, enumname[UnityEngine.Random.Range(0, enumcount)]);
+            Debug.Log(temp);
+
+            return temp;
+        }
+
+
+        return null;
     }
 }

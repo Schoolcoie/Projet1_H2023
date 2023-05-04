@@ -30,7 +30,6 @@ public class ItemGeneratorWindow : EditorWindow
             m_ToggleStates.Add(false); 
        }
     }
-    
 
     private void OnGUI()
     {
@@ -61,8 +60,6 @@ public class ItemGeneratorWindow : EditorWindow
             AssetDatabase.CreateAsset(so, "Assets/Projet1_H2023/Scripts/ScriptableObjects/PassiveItems/Default.asset");
             AssetDatabase.SaveAssets();
         }
-
-
     }
 
     private object Randomize(Type type)
@@ -85,8 +82,6 @@ public class ItemGeneratorWindow : EditorWindow
             return UnityEngine.Random.Range(1, 5);
         }
 
-        Debug.Log(type);
-
         if (type is ICollection<Enum>)
         {
             Debug.Log("Its an Enum!");
@@ -97,8 +92,6 @@ public class ItemGeneratorWindow : EditorWindow
 
             return temp;
         }
-
-
         return null;
     }
 }

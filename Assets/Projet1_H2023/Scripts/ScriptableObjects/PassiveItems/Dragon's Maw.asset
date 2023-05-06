@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 2800000, guid: 1056abb07f41c1042b4f2750cc2abdf2, type: 3}
   Name: Dragon's Maw
+  Description: Test
   DamageMultiplier: 1
   AttackSpeedMultiplier: 0.75
   SpeedMultiplier: 0
@@ -23,3 +24,4 @@ MonoBehaviour:
   AccuracyMultiplier: 0.3
   ProjectileSizeMultiplier: 0.75
   ExtraProjectileModifier: 6
+  Effects: 

@@ -106,7 +106,7 @@ public class Projectile : MonoBehaviour
             {
                 print("Bullet collided with an Enemy");
 
-                other.gameObject.GetComponent<Enemy>().ApplyDamage(Damage);
+                other.gameObject.GetComponent<EnemyStateMachine>().ApplyDamage(Damage);
 
 
                 print($"Bullet dealt {Damage} to {other.gameObject.name}");

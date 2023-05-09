@@ -6,25 +6,28 @@ public class RoamingEnemyState : EnemyState
 {
     private Rigidbody m_Body;
     private float m_Speed = 200.0f;
+    private Coroutine m_RoamingCoroutine;
 
     public RoamingEnemyState(EnemyStateMachine stateMachine) : base(stateMachine)
     {
         m_Body = stateMachine.GetComponent<Rigidbody>();
+        m_RoamingCoroutine = m_StateMachine.StartCoroutine(RoamingRoutine());
     }
 
     public override void ExecuteUpdate()
     {
-        m_StateMachine.StartCoroutine(RoamingRoutine());
 
-        if ((m_StateMachine.transform.position - m_StateMachine.m_Player.GetPlayerPosition).magnitude < 15)
+        if ((m_StateMachine.transform.position - m_StateMachine.m_Player.GetPlayerPosition).magnitude < 5)
         {
             if (m_StateMachine is RangedEnemyStateMachine)
             {
                 m_StateMachine.ChangeState(new ShootingEnemyState(m_StateMachine));
+                m_StateMachine.StopCoroutine(m_RoamingCoroutine);
             }
             else
             {
                 m_StateMachine.ChangeState(new ChasingEnemyState(m_StateMachine));
+                m_StateMachine.StopCoroutine(m_RoamingCoroutine);
             }
         }
     }

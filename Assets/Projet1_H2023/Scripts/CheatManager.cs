@@ -50,13 +50,12 @@ public class CheatManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
     }
 
     private void Update()
     {
-        EnemyPrefab.GetComponent<Enemy>().enemyAmmo = EnemyTypes[EnemyTypeSelected];
-        EnemyPrefab.GetComponent<Enemy>().enemyWeapon = EnemyWeapon;
+        EnemyPrefab.GetComponent<RangedEnemyStateMachine>().enemyAmmo = EnemyTypes[EnemyTypeSelected];
+        EnemyPrefab.GetComponent<RangedEnemyStateMachine>().enemyWeapon = EnemyWeapon;
 
 #if DEBUG
         if (Input.GetKeyDown(KeyCode.F1))

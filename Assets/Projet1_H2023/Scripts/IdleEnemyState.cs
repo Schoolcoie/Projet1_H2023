@@ -5,15 +5,16 @@ using UnityEngine;
 public class IdleEnemyState : EnemyState
 {
     private Rigidbody m_Body;
+    private Coroutine m_IdleCoroutine;
 
     public IdleEnemyState(EnemyStateMachine stateMachine) : base(stateMachine)
     {
         m_Body = stateMachine.GetComponent<Rigidbody>();
+        m_IdleCoroutine = m_StateMachine.StartCoroutine(IdleRoutine());
     }
 
     public override void ExecuteUpdate()
     {
-        m_StateMachine.StartCoroutine(IdleRoutine());
         //after 2 seconds go into roaming
         //if player spotted go into shooting if m_StateMachine is RangedEnemyStateMachine
         //if player spotted go into chasing if m_StateMachine is not RangedEnemyStateMachine
@@ -37,7 +38,6 @@ public class IdleEnemyState : EnemyState
     public override void ExecuteOnTriggerExit(Collider other)
     {
     }
-
 
     private IEnumerator IdleRoutine()
     {

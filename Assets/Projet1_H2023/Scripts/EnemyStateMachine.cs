@@ -35,6 +35,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(m_CurrentState);
         m_CurrentState.ExecuteUpdate();
     }
 

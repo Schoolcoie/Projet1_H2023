@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,11 +36,10 @@ public class Player : MonoBehaviour
     [SerializeField] private Attack secondaryAmmo;
     [SerializeField] private Attack currentAmmo;
 
-    //Passive Items
+    //Passive Items and Inventory
 
     private List<PassiveItem> currentItems = new List<PassiveItem>();
-
-    //private List<>;
+    public Action<PassiveItem> OnItemPickup;
 
     private float HalfScreenWidth = Screen.width / 2;
     private float HalfScreenHeight = Screen.height / 2;
@@ -82,6 +82,8 @@ public class Player : MonoBehaviour
         CurrentHealth = MaxHealth;
         currentWeapon = primaryWeapon;
         currentAmmo = primaryAmmo;
+
+        OnItemPickup += CalculateStats;
 
         //Initialize stats
     }
@@ -174,10 +176,9 @@ public class Player : MonoBehaviour
 
                     if (hoveredItem.item is PassiveItem)
                     {
+                        OnItemPickup?.Invoke((PassiveItem)hoveredItem.item);
                         currentItems.Add((PassiveItem)hoveredItem.item);
-                        OnItemObtained((PassiveItem)hoveredItem.item);
                         hoveredItem.item = null;
-
                     }
                 }
             }
@@ -307,8 +308,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnItemObtained(PassiveItem item)
+    private void CalculateStats(PassiveItem item)
     {
+        Debug.Log("Calculated stats");
         if (item.DamageMultiplier != 0)
         {
             PlayerDamageMultiplier *= item.DamageMultiplier;

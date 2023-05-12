@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -30,11 +31,15 @@ public class Player : MonoBehaviour
     [SerializeField] private Weapon secondaryWeapon;
     [SerializeField] private Weapon currentWeapon;
 
+    public Action<Weapon, Weapon, Weapon> OnWeaponUpdate;
+
     //Ammos
 
     [SerializeField] private Attack primaryAmmo;
     [SerializeField] private Attack secondaryAmmo;
     [SerializeField] private Attack currentAmmo;
+
+    public Action<Attack, Attack, Attack> OnAmmoUpdate;
 
     //Passive Items and Inventory
 
@@ -45,6 +50,7 @@ public class Player : MonoBehaviour
     private float HalfScreenHeight = Screen.height / 2;
     private bool IsDead;
 
+    // Misc 
     private Vector3 playerPosition;
     public Vector3 GetPlayerPosition => playerPosition;
 
@@ -58,6 +64,9 @@ public class Player : MonoBehaviour
 
     private bool IsInvulnerable = false;
     private bool OnCooldown = false;
+
+    private bool CanDash = true;
+    private bool IsDashing = false;
 
     private Vector3 AttackDirection;
     public Vector3 GetAttackDirection => AttackDirection;
@@ -82,6 +91,9 @@ public class Player : MonoBehaviour
         CurrentHealth = MaxHealth;
         currentWeapon = primaryWeapon;
         currentAmmo = primaryAmmo;
+
+        OnWeaponUpdate?.Invoke(currentWeapon, primaryWeapon, secondaryWeapon);
+        OnAmmoUpdate?.Invoke(currentAmmo, primaryAmmo, secondaryAmmo);
 
         OnItemPickup += CalculateStats;
 
@@ -113,21 +125,32 @@ public class Player : MonoBehaviour
                     currentWeapon = secondaryWeapon;
                     currentAmmo = secondaryAmmo;
 
+                    OnWeaponUpdate?.Invoke(currentWeapon, primaryWeapon, secondaryWeapon);
+                    OnAmmoUpdate?.Invoke(currentAmmo, primaryAmmo, secondaryAmmo);
                 }
                 else if (currentWeapon == secondaryWeapon && primaryWeapon != null)
                 {
                     currentWeapon = primaryWeapon;
                     currentAmmo = primaryAmmo;
+
+                    OnWeaponUpdate?.Invoke(currentWeapon, primaryWeapon, secondaryWeapon);
+                    OnAmmoUpdate?.Invoke(currentAmmo, primaryAmmo, secondaryAmmo);
                 }
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 currentAmmo = primaryAmmo;
+
+                OnWeaponUpdate?.Invoke(currentWeapon, primaryWeapon, secondaryWeapon);
+                OnAmmoUpdate?.Invoke(currentAmmo, primaryAmmo, secondaryAmmo);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 currentAmmo = secondaryAmmo;
+
+                OnWeaponUpdate?.Invoke(currentWeapon, primaryWeapon, secondaryWeapon);
+                OnAmmoUpdate?.Invoke(currentAmmo, primaryAmmo, secondaryAmmo);
             }
 
             if (hoveredItem != null)
@@ -143,12 +166,14 @@ public class Player : MonoBehaviour
                             currentAmmo = temp;
                             hoveredItem.item = primaryAmmo;
                             primaryAmmo = temp;
+                            OnAmmoUpdate?.Invoke(currentAmmo, primaryAmmo, secondaryAmmo);
                         }
                         else
                         {
-                            secondaryAmmo = temp;
+                            currentAmmo = temp;
                             hoveredItem.item = secondaryAmmo;
                             secondaryAmmo = temp;
+                            OnAmmoUpdate?.Invoke(currentAmmo, primaryAmmo, secondaryAmmo);
                         }
                     }
 
@@ -160,16 +185,19 @@ public class Player : MonoBehaviour
                             currentWeapon = temp;
                             hoveredItem.item = primaryWeapon;
                             primaryWeapon = currentWeapon;
+                            OnWeaponUpdate?.Invoke(currentWeapon, primaryWeapon, secondaryWeapon);
                         }
                         else
                         {
                             currentWeapon = temp;
                             hoveredItem.item = secondaryWeapon;
                             secondaryWeapon = currentWeapon;
+                            OnWeaponUpdate?.Invoke(currentWeapon, primaryWeapon, secondaryWeapon);
 
                             if (secondaryAmmo == null)
                             {
                                 secondaryAmmo = secondaryWeapon.DefaultAttackType;
+                                OnAmmoUpdate?.Invoke(currentAmmo, primaryAmmo, secondaryAmmo);
                             }
                         }
                     }
@@ -194,7 +222,7 @@ public class Player : MonoBehaviour
 
             Quaternion BulletRotation = Quaternion.LookRotation(new Vector3(AttackDirection.x, 0, AttackDirection.z), Vector3.up);
 
-            if (!OnCooldown)
+            if (!OnCooldown && !IsDashing)
             {
                 if (Input.GetKey(KeyCode.Mouse1))
                 {
@@ -242,10 +270,12 @@ public class Player : MonoBehaviour
 
     private IEnumerator InvulnerabilityRoutine(float invuln)
     {
+        PlayerSpeed *= 1.5f;
         IsInvulnerable = true;
         StartCoroutine(InvulnerabilityBlink());
         yield return new WaitForSeconds(invuln);
         IsInvulnerable = false;
+        PlayerSpeed /= 1.5f;
     }
 
     private IEnumerator InvulnerabilityBlink()
@@ -282,12 +312,25 @@ public class Player : MonoBehaviour
 
 
         //Dash
-        float DashTimer = 0;
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift) && CanDash)
         {
-            transform.position = Vector2.Lerp(transform.position, transform.position - Vector3.up, DashTimer);
+            StartCoroutine(InvulnerabilityRoutine(1));
+            StartCoroutine(DashCooldownRoutine(3));
         }
+    }
+
+    private IEnumerator DashCooldownRoutine(float cooldown)
+    {
+        transform.GetComponentInChildren<SpriteRenderer>().color = Color.blue;
+        CanDash = false;
+        IsDashing = true;
+        yield return new WaitForSeconds(cooldown / 3);
+        IsDashing = false;
+        transform.GetComponentInChildren<SpriteRenderer>().color = Color.cyan;
+        yield return new WaitForSeconds((cooldown / 3) * 2);
+        CanDash = true;
+        transform.GetComponentInChildren<SpriteRenderer>().color = Color.white;
     }
 
     public void ApplyDamage(float Damage)
@@ -301,7 +344,7 @@ public class Player : MonoBehaviour
             if (CurrentHealth <= 0)
             {
                 IsDead = true;
-                Destroy(gameObject);
+                SceneManager.LoadScene("Main Menu");
             }
 
             StartCoroutine(InvulnerabilityRoutine(1.5f));

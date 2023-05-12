@@ -14,11 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 2800000, guid: 31d3d1a0644357049ba1aecfe696f498, type: 3}
   Name: Muscular Beef
+  Description: Test
   DamageMultiplier: 1.1
   AttackSpeedMultiplier: 0
-  SpeedMultiplier: 0.75
+  SpeedMultiplier: 0.85
   HPMultiplier: 1.25
   ProjectileSpeedMultiplier: 0
   RangeMultiplier: 0
   AccuracyMultiplier: 0
   ProjectileSizeMultiplier: 1.5
+  ExtraProjectileModifier: 0
+  Effects: 

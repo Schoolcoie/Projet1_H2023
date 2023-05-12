@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: ProjectileEffects
   m_EditorClassIdentifier: 
   Table:
-  - {fileID: 11400000, guid: 26d9b24106b7dbc45acf06f2f199ae90, type: 2}
   - {fileID: 11400000, guid: d31f501d6a585bd44afe744fc6c8ac7d, type: 2}
   - {fileID: 11400000, guid: 030b8977af9f2b940b576e0badc8cf27, type: 2}
   - {fileID: 11400000, guid: d7abb6c45ad33194792e907b3ae465dc, type: 2}

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5d0fb53ffe814d41b3071204938e403, type: 3}
   m_Name: Randomly Sized Bullets
   m_EditorClassIdentifier: 
-  Icon: {fileID: 0}
+  Icon: {fileID: 2800000, guid: f8dd624f27ae0944892804d445028016, type: 3}
   Name: Monstro's Gut
   Description: Test
   DamageMultiplier: 0

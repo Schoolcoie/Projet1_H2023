@@ -18,7 +18,7 @@ public class ChasingEnemyState : EnemyState
         Vector3 directiontoplayer = m_StateMachine.m_Player.transform.position - m_StateMachine.transform.position;
         m_Body.velocity = directiontoplayer.normalized * 3;
 
-        if ((m_StateMachine.transform.position - m_StateMachine.m_Player.GetPlayerPosition).magnitude > 5)
+        if ((m_StateMachine.transform.position - m_StateMachine.m_Player.GetPlayerPosition).magnitude > 10 && m_StateMachine.m_CanChangeState)
         {
             m_StateMachine.ChangeState(new IdleEnemyState(m_StateMachine));
         }

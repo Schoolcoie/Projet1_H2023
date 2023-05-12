@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 2800000, guid: 8cc2c6161e11f6c40892353d6d890a38, type: 3}
   Name: Default
+  Description: Test
   DamageMultiplier: 0
   AttackSpeedMultiplier: 0
   SpeedMultiplier: 0
   HPMultiplier: 0
-  ProjectileSpeedMultiplier: 0
+  ProjectileSpeedMultiplier: 1.2
   RangeMultiplier: 0
   AccuracyMultiplier: 0
   ProjectileSizeMultiplier: 0
